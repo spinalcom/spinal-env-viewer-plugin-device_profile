@@ -245,88 +245,88 @@ class DeviceHelper {
 
   }
 
-  static async generateLampProfile(parentId, json) {
+  // static async generateLampProfile(parentId, json) {
 
-    const tabNetwork = ["50", "51", "52", "53", "54", "55", "56", "57", "20"];
-    const tabAVNetwork = ["65", "66", "67", "68", "69", "70", "71", "72", "88"];
-    const tabAVModeAuto = ["92", "93", "94", "95", "96", "97"];
-    const tabBV = ["30", "50", "51", "52", "53", "54", "55", "56", "57"];
+  //   const tabNetwork = ["50", "51", "52", "53", "54", "55", "56", "57", "20"];
+  //   const tabAVNetwork = ["65", "66", "67", "68", "69", "70", "71", "72", "88"];
+  //   const tabAVModeAuto = ["92", "93", "94", "95", "96", "97"];
+  //   const tabBV = ["30", "50", "51", "52", "53", "54", "55", "56", "57"];
 
-    const jsonNV = json.Root.BacnetIPNetworkValueResource;
-    const jsonAV = json.Root.BacnetIPAnalogValueResource;
-    const jsonBV = json.Root.BacnetIPBinaryValueResource;
+  //   const jsonNV = json.Root.BacnetIPNetworkValueResource;
+  //   const jsonAV = json.Root.BacnetIPAnalogValueResource;
+  //   const jsonBV = json.Root.BacnetIPBinaryValueResource;
 
-    return DeviceHelper.initialize()
-      .then(async result => {
+  //   return DeviceHelper.initialize()
+  //     .then(async result => {
 
-        // 1: Génération du profil de lampe
-        const LampId = SpinalGraphService.createNode({
-          name: "Lamp Profile",
-          type: "lampProfile"
-        }, undefined);
-        var LampNode = await SpinalGraphService.addChildInContext(parentId, LampId, DeviceHelper.contextId,
-          "hasLampProfile", SPINAL_RELATION_PTR_LST_TYPE);
+  //       // 1: Génération du profil de lampe
+  //       const LampId = SpinalGraphService.createNode({
+  //         name: "Lamp Profile",
+  //         type: "lampProfile"
+  //       }, undefined);
+  //       var LampNode = await SpinalGraphService.addChildInContext(parentId, LampId, DeviceHelper.contextId,
+  //         "hasLampProfile", SPINAL_RELATION_PTR_LST_TYPE);
 
-        // 1a : génération des NV
-        const generatedNetworkValueId = SpinalGraphService.createNode({
-          name: "Network Values",
-          type: "networValue"
-        }, undefined);
-        var generatedNetworkValueNode = await SpinalGraphService.addChildInContext(LampId, generatedNetworkValueId, DeviceHelper.contextId,
-          "hasNetworkValues", SPINAL_RELATION_PTR_LST_TYPE);
+  //       // 1a : génération des NV
+  //       const generatedNetworkValueId = SpinalGraphService.createNode({
+  //         name: "Network Values",
+  //         type: "networValue"
+  //       }, undefined);
+  //       var generatedNetworkValueNode = await SpinalGraphService.addChildInContext(LampId, generatedNetworkValueId, DeviceHelper.contextId,
+  //         "hasNetworkValues", SPINAL_RELATION_PTR_LST_TYPE);
 
-        for (var elt in jsonNV) {
-          if (tabNetwork.includes(jsonNV[elt].IDX)) {
-            var NVNode = await DeviceHelper.generateProfile(generatedNetworkValueId, jsonNV[elt].NAME, "networkValue",
-              jsonNV[elt].IDX, "hasNetworkValue", SPINAL_RELATION_PTR_LST_TYPE);
+  //       for (var elt in jsonNV) {
+  //         if (tabNetwork.includes(jsonNV[elt].IDX)) {
+  //           var NVNode = await DeviceHelper.generateProfile(generatedNetworkValueId, jsonNV[elt].NAME, "networkValue",
+  //             jsonNV[elt].IDX, "hasNetworkValue", SPINAL_RELATION_PTR_LST_TYPE);
 
-            for (var AVNVelt in jsonAV) {
-              if (jsonAV[AVNVelt].IDX == jsonNV[elt].Target.ObjectInstance - 1) {
-                var AVNVNode = await DeviceHelper.generateProfile(NVNode.info.id, jsonAV[AVNVelt].NAME, "analogValue",
-                  jsonAV[AVNVelt].IDX, "hasAnalogValue", SPINAL_RELATION_PTR_LST_TYPE);
-              }
-            }
-            console.log(NVNode);
-          }
-        }
+  //           for (var AVNVelt in jsonAV) {
+  //             if (jsonAV[AVNVelt].IDX == jsonNV[elt].Target.ObjectInstance - 1) {
+  //               var AVNVNode = await DeviceHelper.generateProfile(NVNode.info.id, jsonAV[AVNVelt].NAME, "analogValue",
+  //                 jsonAV[AVNVelt].IDX, "hasAnalogValue", SPINAL_RELATION_PTR_LST_TYPE);
+  //             }
+  //           }
+  //           console.log(NVNode);
+  //         }
+  //       }
 
-        // 1b: Génération des AV du mode automatique
+  //       // 1b: Génération des AV du mode automatique
 
-        const modeAutomatiqueId = SpinalGraphService.createNode({
-          name: "Mode Automatique",
-          type: "mode"
-        }, undefined);
-        var modeAutomatiqueNode = await SpinalGraphService.addChildInContext(LampId, modeAutomatiqueId, DeviceHelper.contextId,
-          "hasModeAutomatique", SPINAL_RELATION_PTR_LST_TYPE);
+  //       const modeAutomatiqueId = SpinalGraphService.createNode({
+  //         name: "Mode Automatique",
+  //         type: "mode"
+  //       }, undefined);
+  //       var modeAutomatiqueNode = await SpinalGraphService.addChildInContext(LampId, modeAutomatiqueId, DeviceHelper.contextId,
+  //         "hasModeAutomatique", SPINAL_RELATION_PTR_LST_TYPE);
 
-        for (var AVelt in jsonAV) {
-          if (tabAVModeAuto.includes(jsonAV[AVelt].IDX)) {
-            var AVNode = await DeviceHelper.generateProfile(modeAutomatiqueId, jsonAV[AVelt].NAME, "analogValue",
-              jsonAV[AVelt].IDX, "hasAnalogValue", SPINAL_RELATION_PTR_LST_TYPE);
-            console.log(AVNode);
+  //       for (var AVelt in jsonAV) {
+  //         if (tabAVModeAuto.includes(jsonAV[AVelt].IDX)) {
+  //           var AVNode = await DeviceHelper.generateProfile(modeAutomatiqueId, jsonAV[AVelt].NAME, "analogValue",
+  //             jsonAV[AVelt].IDX, "hasAnalogValue", SPINAL_RELATION_PTR_LST_TYPE);
+  //           console.log(AVNode);
 
 
-          }
-        }
+  //         }
+  //       }
 
-        // 1c: Génération des Binary Value restantes
+  //       // 1c: Génération des Binary Value restantes
 
-        const binaryValueId = SpinalGraphService.createNode({
-          name: "Binary Values",
-          type: "binaryValues"
-        }, undefined);
-        var binaryValueNode = await SpinalGraphService.addChildInContext(LampId, binaryValueId, DeviceHelper.contextId,
-          "hasBinaryValues", SPINAL_RELATION_PTR_LST_TYPE);
+  //       const binaryValueId = SpinalGraphService.createNode({
+  //         name: "Binary Values",
+  //         type: "binaryValues"
+  //       }, undefined);
+  //       var binaryValueNode = await SpinalGraphService.addChildInContext(LampId, binaryValueId, DeviceHelper.contextId,
+  //         "hasBinaryValues", SPINAL_RELATION_PTR_LST_TYPE);
 
-        for (var BVelt in jsonBV) {
-          if (tabBV.includes(jsonBV[BVelt].IDX)) {
-            var BVNode = await DeviceHelper.generateProfile(binaryValueId, jsonBV[BVelt].NAME, "binaryValue",
-              jsonBV[BVelt].IDX, "hasBinaryValue", SPINAL_RELATION_PTR_LST_TYPE);
-            console.log(BVNode);
-          }
-        }
-      }).catch(err => console.log(err));
-  }
+  //       for (var BVelt in jsonBV) {
+  //         if (tabBV.includes(jsonBV[BVelt].IDX)) {
+  //           var BVNode = await DeviceHelper.generateProfile(binaryValueId, jsonBV[BVelt].NAME, "binaryValue",
+  //             jsonBV[BVelt].IDX, "hasBinaryValue", SPINAL_RELATION_PTR_LST_TYPE);
+  //           console.log(BVNode);
+  //         }
+  //       }
+  //     }).catch(err => console.log(err));
+  // }
 
   //////////////////////////////////////////////////
   ///////////      ITEM LIST FONCTIONS /////////////
@@ -425,13 +425,14 @@ class DeviceHelper {
         name: childNode.name._data,
         maitre: childNode.maitre._data,
         itemType: childNode.itemType._data,
+        namingConvention: childNode.namingConvention._data,
         nodeId: children[elt]
       });
     }
     return tab2;
   }
 
-  static async generateItem(parentId, nodeName, isMaitre, itemType, relationName) {
+  static async generateItem(parentId, nodeName, isMaitre, itemType, namingConvention, relationName) {
     return DeviceHelper.initialize()
       .then(async result => {
 
@@ -440,6 +441,7 @@ class DeviceHelper {
           name: nodeName,
           maitre: isMaitre,
           itemType: itemType,
+          namingConvention: namingConvention,
           type: "item",
         }, undefined);
         await SpinalGraphService.addChildInContext(parentId, generatedItemId, DeviceHelper.contextId,
@@ -464,6 +466,7 @@ class DeviceHelper {
           name: nodeName,
           maitre: isMaitre,
           itemType: itemType,
+          namingConvention: namingConvention,
           nodeId: generatedItemId
           // details: "test"
         };
@@ -554,6 +557,30 @@ class DeviceHelper {
     return outputTab;
   }
 
+  static async itemDetailInfos(selectedNode) {
+    console.log(selectedNode);
+    if(selectedNode.info == undefined){
+      console.log({
+        namingConvention: selectedNode.namingConvention._data,
+        maitre: selectedNode.maitre._data
+      });
+      return {
+        namingConvention: selectedNode.namingConvention._data,
+        maitre: selectedNode.maitre._data
+      };
+    }
+    else{
+      console.log({
+        namingConvention: selectedNode.info.namingConvention._data,
+        maitre: selectedNode.info.maitre._data
+      });
+      return {
+        namingConvention: selectedNode.info.namingConvention._data,
+        maitre: selectedNode.info.maitre._data
+      };
+    }
+  }
+
   static async itemDetailInputOutput(selectedNode) {
 
     var tab = new Object();
@@ -599,7 +626,6 @@ class DeviceHelper {
       var valueNodeIds = valueNode.childrenIds;
       for (var elt2 in valueNodeIds) {
         var finalNode = await SpinalGraphService.getNodeAsync(valueNodeIds[elt2]);
-        console.log(finalNode.name);
         if(finalNode.name != undefined){
           idx = parseInt(finalNode.IDX._data);
           tempTab.push({
@@ -612,7 +638,15 @@ class DeviceHelper {
         
       }
     }
+
     return tab;
+  }
+
+  static async modifyConventionAndMasterInfos(parentId,namingConvention, master){
+
+    var node = await SpinalGraphService.getRealNode(parentId);
+    node.info.namingConvention.set(namingConvention);
+    node.info.maitre.set(master);
   }
 
   static async addSelectedInputOutput(parentId, selectedInputTab, selectedOutputTab) {

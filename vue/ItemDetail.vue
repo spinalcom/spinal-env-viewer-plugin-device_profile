@@ -28,7 +28,24 @@ with this file. If not, see
       <v-dialog v-model="dialog" max-width="1200">
         <v-card :dark="true">
           <v-card-title class="headline">{{ selected }} Item Details</v-card-title>
-          <div>
+
+          
+
+          
+            <div class="infos">
+
+              <md-field class="infos-details">
+                <label>BIM Naming Convention</label>
+                <md-input v-model="namingConvention"></md-input>
+              </md-field>
+              <v-spacer></v-spacer>
+              <div class="infos-details2">
+                <md-content> Master  </md-content>
+                <md-checkbox class="checkbox" v-model="maitre"></md-checkbox>
+              </div>
+            </div>
+            
+            
             <md-tabs>
               <md-tab id="tab-input" md-label="Input">
                 <div class="tableaux">
@@ -209,7 +226,7 @@ with this file. If not, see
                 >Valider
               </v-btn>
             </v-card-actions>
-          </div>
+          
         </v-card>
       </v-dialog>
     </v-layout>
@@ -231,6 +248,8 @@ export default {
 
   data: () => ({
     users: [],
+    namingConvention: null,
+    maitre: false,
     selected: null,
     parentId: null,
     parentNode: null,
@@ -273,6 +292,9 @@ export default {
         option.selectedNode
       );
       await this.arrangeTabs();
+
+      this.namingConvention = (await DeviceHelper.itemDetailInfos(option.selectedNode)).namingConvention;
+      this.maitre = (await DeviceHelper.itemDetailInfos(option.selectedNode)).maitre;
     },
     arrangeTabs: async function () {
       for (var elt in this.ioTab.NetworkValue) {
@@ -317,6 +339,8 @@ export default {
     ,
     initializeData: function(){
       this.users = [];
+      this.namingConvention = null;
+      this.maitre = false;
       this.selected = null;
       this.parentId = null;
       this.parentNode = null;
@@ -349,6 +373,7 @@ export default {
       this.dialog = false;
     },
     onSave: async function () {
+      await DeviceHelper.modifyConventionAndMasterInfos(this.parentId, this.namingConvention, this.maitre);
       await DeviceHelper.addSelectedInputOutput(
         this.parentId,
         this.selectedInputs,
@@ -495,6 +520,23 @@ export default {
 }
 .search {
   max-width: 100px;
+}
+.infos{
+  display: flex;
+  justify-content: space-around;
+  padding-left: 30%;
+  padding-right: 35%;
+}
+.infos-details{
+  max-width: 35%;
+}
+.infos-details2{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.checkbox{
+  padding-left: 8px;
 }
 </style>
 

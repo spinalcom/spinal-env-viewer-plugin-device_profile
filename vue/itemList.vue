@@ -25,7 +25,7 @@ with this file. If not, see
 <template>
   <v-app>
     <v-layout row justify-center>
-      <v-dialog v-model="dialog">
+      <v-dialog v-model="dialog" max-width="1200">
         <v-card :dark="true">
           <div>
             <md-table
@@ -37,7 +37,7 @@ with this file. If not, see
               @md-selected="onSelect"
             >
             
-              <md-table-toolbar>
+              <md-table-toolbar max-width="1200">
                 <h1 class="md-title">Item List</h1>
               </md-table-toolbar>
 
@@ -52,11 +52,14 @@ with this file. If not, see
                   item.itemType
                 }}</md-table-cell>
 
+                <md-table-cell md-label="BIM Naming Convention" md-sort-by="BIM Naming Convention">{{
+                  item.namingConvention
+                }}</md-table-cell>
+
+
                 <md-table-cell md-label="Détails">
-                <!-- <md-button class="md-icon-button" flat @click="onDetails"> -->
-
-
-                 <md-button class="md-icon-button" @click ="onDetails" > 
+             
+                 <md-button class="md-icon-button" @click ="onDetails(item)" > 
         <md-icon>arrow_right_alt</md-icon>
       </md-button>
 
@@ -74,9 +77,10 @@ with this file. If not, see
 
           </v-card-actions>
 
-          <md-dialog :md-active.sync="dialog2">
+          <md-dialog class="test" :md-active.sync="dialog2">
             <md-dialog-title>Add Item</md-dialog-title>
             <md-content> Fill in this form to add an Item</md-content>
+
 
             <md-field :class="requiredClass1">
               <label>Item Name...</label>
@@ -93,6 +97,12 @@ with this file. If not, see
             </md-field>
 
             <md-checkbox v-model="item_added.maitre">Maitre</md-checkbox>
+
+            <md-field>
+              <label>BIM Naming Convention...</label>
+              <md-input v-model="item_added.namingConvention"></md-input>
+              <span class="md-helper-text">Ex: L_1</span>
+            </md-field>
 
             <v-card-actions>
             <v-spacer></v-spacer>
@@ -142,7 +152,8 @@ export default {
     item_added: {
       name: null,
       maitre: false,
-      type: null
+      type: null,
+      namingConvention: ""
     },
   }),
   computed: {
@@ -179,8 +190,15 @@ export default {
       this.item_added.name = null;
       this.item_added.type = null;
       this.item_added.maitre = false;
+      this.item_added.namingConvention = "";
     },
-    onDetails:  async function() {
+    onDetails:  async function(item) {
+      this.onSelect(item);
+
+
+      
+      console.log("clicked", item);
+
       var paramSent = new Object();
       const graphOfSelectedNode = await SpinalGraphService.getGraph(this.selected.nodeId);
       var tempNode = await SpinalGraphService.getRealNode(this.selected.nodeId);
@@ -188,6 +206,8 @@ export default {
       tempNode.id = tempNode.info.id;
       paramSent.graph = graphOfSelectedNode;
       paramSent.selectedNode = tempNode;
+
+      console.log(paramSent);
 
       spinalPanelManagerService.openPanel("DialogItemDetail", paramSent);
     },
@@ -240,7 +260,7 @@ export default {
           this.dialog3 = true;
         }
         else{
-          this.users.push(await DeviceHelper.generateItem(this.parentId, this.item_added.name, this.item_added.maitre, this.item_added.type, "hasItem"));
+          this.users.push(await DeviceHelper.generateItem(this.parentId, this.item_added.name, this.item_added.maitre, this.item_added.type, this.item_added.namingConvention, "hasItem"));
           this.dialog2 = false;
           this.dialog = true;
         }
@@ -255,5 +275,19 @@ export default {
 </script>
 
 <style scoped>
+.test{
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.md-dialog-title{
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+.md-table-row{
+  justify-content: center;
+  align-items: center;
+}
+
 </style>
 
