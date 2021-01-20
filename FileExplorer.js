@@ -143,7 +143,7 @@ export class FileExplorer {
       // check recursive directory & create a ZIP
     }
   }
-  
+
   static async getXmlContent(xmlFile, nodeId) {
     return new Promise(async (resolve, reject) => {
       xmlFile._ptr.load(path => {
@@ -153,30 +153,181 @@ export class FileExplorer {
             xml2js.parseStringPromise(data.data, { mergeAttrs: true, explicitArray: false, preserveWhitespace: true })
               .then(result => {
 
-                new Promise( async resolve => {
-                  
+                new Promise(async resolve => {
+
                   await DeviceHelper.generateBacNetValues(nodeId, result);
                   await DeviceHelper.generateItem_list(nodeId);
                   //  await DeviceHelper.generateLampProfile(nodeId, result);
-                  
+
                 }).catch(err => console.log(err));
 
               })
 
-              }).catch(err => console.log(err));
-          })
+          }).catch(err => console.log(err));
       })
-    };
-  
+    })
+  };
+
+  static readTextFile(file) {
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, false);
+    rawFile.onreadystatechange = function () {
+      if (rawFile.readyState === 4) {
+        if (rawFile.status === 200 || rawFile.status == 0) {
+          var allText = rawFile.responseText;
+          alert(allText);
+        }
+      }
+    }
+    rawFile.send(null);
+  };
+
+  // analyse du fichier BOG
+
+  static async parseBOGFile(xmlFile){
+
+    return new Promise ((resolve, reject) => {
+
+      xml2js.parseStringPromise(xmlFile, { mergeAttrs: true , explicitArray: false})
+.then(result => {
+
+    var returnJson = [];
+    var returnJson2 = [];
+    var name = "";
+    var ioName = "";
+    var ioType = "";
+    var ioIdx = "";
+    var ioSuite = "";
+    var indexCheckName = -1;
+
+    var ioTemp = "";
+
+    for(var elt in result.bajaObjectGraph.p.p.p[0].p){
+        name = result.bajaObjectGraph.p.p.p[0].p[elt].n;
+        var links= [];
+
+        if(result.bajaObjectGraph.p.p.p[0].p[elt].p.length != undefined){
+            for(var elt2 in result.bajaObjectGraph.p.p.p[0].p[elt].p){
+                if(result.bajaObjectGraph.p.p.p[0].p[elt].p[elt2].n == "values"){
+                    var strLinks = result.bajaObjectGraph.p.p.p[0].p[elt].p[elt2].v;
+                    var strSplit = strLinks.split(";");
+                    for(var i in strSplit){
+                        if(strSplit[i] != "baja:String" && strSplit[i] != 'iconName' && strSplit[i].includes("$") == false){
+
+                            // récupération du nom de la variable d'entrée / sortie
+                            ioName = strSplit[i];
+
+                            // récupération du type et de l'id de la variable d'entrée sortie
+                            var ioValueStr = strSplit[parseInt(i)+1];
+
+                            var ioValueSplitted = ioValueStr.split('$3a');
+                            
+                            if(ioValueSplitted[0] == 'nv' || ioValueSplitted[0] == 'bv' || ioValueSplitted[0] == 'av' || ioValueSplitted[0] == 'mv'){
+                                ioType = ioValueSplitted[0];
+                                var ioFull = ioValueSplitted;
+                                if(ioValueSplitted[1] == parseInt(ioValueSplitted[1])){
+                                    ioIdx = ioValueSplitted[1];
+                                }
+                                else if(ioValueSplitted[1].includes('$3be')){
+                                    ioIdx = ioValueSplitted[1].split('$3be')[0];
+                                }
+                                links.push({
+                                    name: ioName,
+                                    type: ioType,
+                                    idx: ioIdx,
+                                    suite: ioSuite
+                                });
+                            }
+                        }
+                    }
+                }
+                else{
+                }
+            }
+        }
+        else{
+            var usedString = result.bajaObjectGraph.p.p.p[0].p[elt].p.v;
+            var usedStringSplitted = usedString.split(';');
+            for (var elementinSplitted in usedStringSplitted){
+                if(elementinSplitted != usedStringSplitted.length -1){
+                    if(usedStringSplitted[parseInt(elementinSplitted)+1].includes("$3a") == true){
+                        ioName = usedStringSplitted[elementinSplitted];
+                        ioTemp = usedStringSplitted[parseInt(elementinSplitted)+1].split("$3a");
+                        if(ioTemp[0] == "nv" || ioTemp[0] == "bv" || ioTemp[0] == "av" || ioTemp[0] == "mv"){
+                            ioType = ioTemp[0];
+                            ioIdx = ioTemp[1].split('$3be')[0];
+                            if(ioTemp.length == 3){
+                                ioSuite = ioTemp[2];
+                            }
+                            else{
+                                ioSuite = 0;
+                            }
+                            links.push({
+                                name: ioName,
+                                type: ioType,
+                                idx: ioIdx,
+                                suite: ioSuite
+                            });
+                        }
+                }
+                }
+            }
+        }
+
+        if(links.length != 0){
+            returnJson.push({
+            name: name,
+            links: links
+            });
+        }
+    }
+
+    // analyse de returnJson pour enelver les _Data et fusionner les données
+
+    for (var jsonElement in returnJson){
+      var realName = returnJson[jsonElement].name.split("_Data")[0];
+      returnJson[jsonElement].name = realName;
+      for(var json2Element in returnJson2){
+        if(returnJson2[json2Element].name == realName){
+          indexCheckName = parseInt(json2Element);
+        }
+      }
+      if(indexCheckName == -1){
+        returnJson2.push(returnJson[jsonElement]);
+      }
+      else{
+        if(returnJson2[indexCheckName] == undefined){
+          console.log(indexCheckName);
+        }
+        else{
+          for(var linksElement in returnJson[jsonElement].links){
+            returnJson2[indexCheckName].links.push(returnJson[jsonElement].links[linksElement]);
+          }
+        }
+      }
+      indexCheckName = -1;
+    }
+
+    // console.log(returnJson2);
+    return resolve(returnJson2);
+    
+})
+.catch(err => console.log(err));
+
+
+    })
+    
+  }
+
 }
 
 
-/* 
+/*
 const deviceId = SpinalGraphService.createNode( {
           name,
           type: DEVICE_TYPE
         }, undefined );
-        
+
         var deviceContext =  SpinalGraphService
           .addChildInContext( parentId, deviceId, DeviceHelper.contextId,
           PART_RELATION_NAME, PART_RELATION_TYPE );

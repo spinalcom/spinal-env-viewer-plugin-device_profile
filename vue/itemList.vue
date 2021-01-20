@@ -27,6 +27,7 @@ with this file. If not, see
     <v-layout row justify-center>
       <v-dialog v-model="dialog" max-width="1200">
         <v-card :dark="true">
+
           <div>
             <md-table
               v-model="users"
@@ -39,7 +40,14 @@ with this file. If not, see
             
               <md-table-toolbar max-width="1200">
                 <h1 class="md-title">Item List</h1>
+                
+                <md-button class="md-dense md-raised md-primary" @click="importBOGFile">Import BOG file</md-button>
+
+                <md-button class="md-icon-button md-raised md-accent" @click="clearItemList">
+                  <md-icon>delete_forever</md-icon>
+                </md-button>
               </md-table-toolbar>
+
 
               <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="single">
                 <md-table-cell md-label="Item name" md-sort-by="Item name">{{
@@ -118,6 +126,25 @@ with this file. If not, see
       md-title="Error : invalid item !"
       md-content="This item already exists in this profile." />
 
+      <md-dialog class="dialogImportBogFile" :md-active.sync="dialogImportBogFile">
+        <md-dialog-title>Import BOG File</md-dialog-title>
+        <md-content> Import xml file from BOG</md-content>
+        <md-field>
+          <label>xml file</label>
+          <md-file v-model="single" @change="getFile"/>
+          <!-- <input type="file" name="xmlFile" id="single" @change="getFile"> -->
+        </md-field>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red darken-1" flat @click="onCancelDialogImport">Annuler </v-btn>
+          <v-btn color="green darken-1" flat @click="onSaveDialogImport">Valider </v-btn>
+        </v-card-actions>
+
+       
+
+
+      </md-dialog>
+
         </v-card>
       </v-dialog>
     </v-layout>
@@ -126,14 +153,19 @@ with this file. If not, see
 
 <script>
 import { SpinalNode } from "spinal-model-graph";
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import { SPINAL_RELATION_LST_PTR_TYPE } from "spinal-env-viewer-graph-service";
+import { SpinalGraphService, SPINAL_RELATION_PTR_LST_TYPE } from "spinal-env-viewer-graph-service";
+import { PART_RELATION_NAME, PART_RELATION_TYPE, DEVICE_RELATION_NAME, DEVICE_RELATION_TYPE, DEVICE_TYPE, DEVICE_PROFILES_TYPE } from "../constants";
 
 import { DeviceHelper } from "../build/DeviceHelper";
+import { FileExplorer } from '../FileExplorer';
+import { resolve } from 'dns';
 
 const {
   spinalPanelManagerService
 } = require("spinal-env-viewer-panel-manager-service");
+
+const xml2js = require('xml2js');
+const fs = require('fs');
 
 export default {
   name: "DialogItemList",
@@ -145,7 +177,9 @@ export default {
     selected: {},
     dialog: null,
     dialog2: false,
+    other: null,
     dialog3: false,
+    dialogImportBogFile: false,
     value: [],
     invalidFieldName: true,
     invalidFieldType: true,
@@ -155,6 +189,9 @@ export default {
       type: null,
       namingConvention: ""
     },
+    single: null,
+    tempBlob: null,
+    parsedBOGTab: null,
   }),
   computed: {
     requiredClass1 (){
@@ -249,6 +286,19 @@ export default {
       }
       return false;
     },
+    clearItemList: async function(){
+      await DeviceHelper.clearItems(this.parentId);
+      await DeviceHelper.clearLinks(this.parentId, "hasTempTab", SPINAL_RELATION_PTR_LST_TYPE);
+      this.users = [];
+    },
+    importBOGFile: async function(){
+      console.log("import BOG file function");
+      await DeviceHelper.clearLinks(this.parentId, "hasTempTab", SPINAL_RELATION_PTR_LST_TYPE);
+      this.single = null;
+      this.dialog = false;
+      this.dialogImportBogFile = true;
+
+    },
     onCancelDialog: function () {
       this.dialog2 = false;
       this.dialog = true;
@@ -269,6 +319,53 @@ export default {
       else{
         console.log("fill the required fields please");
       }
+    },
+    onSaveDialogImport: async function(){
+      var realParentNode = SpinalGraphService.getRealNode(this.parentId);
+      let bogTab;
+      if(realParentNode.hasRelation("hasTempTab", SPINAL_RELATION_PTR_LST_TYPE)){
+        const childOfTab = await realParentNode.getChildren("hasTempTab");
+        bogTab = childOfTab[0].info.tab;
+        await DeviceHelper.clearItems(this.parentId);
+        await DeviceHelper.generateItemFromBOG(this.parentId, bogTab);
+        await DeviceHelper.clearLinks(this.parentId, "hasTempTab", SPINAL_RELATION_PTR_LST_TYPE);
+        this.dialogImportBogFile = false;
+        this.dialog = true;
+      }
+      else{
+        this.dialogImportBogFile = false;
+        this.dialog = true;
+      }
+      
+    },
+    onCancelDialogImport: async function(){
+      await DeviceHelper.clearLinks(this.parentId, "hasTempTab", SPINAL_RELATION_PTR_LST_TYPE);
+      this.dialogImportBogFile = false;
+      this.dialog = true;
+    },
+     getFile: async function(event){
+      return new Promise((resolve, reject) => {
+        this.single = event.target.files;
+        const reader = new FileReader();
+        
+        var testId = this.parentId;
+
+        reader.onload = async function(e) {
+          this.parsedBOGTab = await FileExplorer.parseBOGFile(e.target.result);
+
+               DeviceHelper.initialize()
+      .then(async result => {
+      const generatedNodeId = SpinalGraphService.createNode({
+          tab: this.parsedBOGTab,
+          name: 'tempTab',
+          type: "tempTab",
+        }, undefined);
+        var generatedNode = await SpinalGraphService.addChildInContext(testId, generatedNodeId, DeviceHelper.contextId,
+          "hasTempTab", SPINAL_RELATION_PTR_LST_TYPE);
+      })
+        }
+        reader.readAsText(event.target.files[0]);
+      })
     }
   },
 };

@@ -384,11 +384,11 @@ export default {
     onSelectInput: async function(items) {
       //this.inputSearch = [];
       
-        await this.passElementBetweenTables(items, this.inputTab, this.selectedInputs, this.saveInputTab, 0);
-        await this.inputSearchOnTable();
+         this.passElementBetweenTables(items, this.inputTab, this.selectedInputs, this.saveInputTab, 0);
+         this.inputSearchOnTable();
     },
     onSelectOutput: async function(items) {
-      await this.passElementBetweenTables(items, this.outputTab, this.selectedOutputs,this.saveOutputTab, 0);
+       this.passElementBetweenTables(items, this.outputTab, this.selectedOutputs,this.saveOutputTab, 0);
     },
     onSelectinPutSelection(items){
       this.selectedSelectedInputs = items;
@@ -401,28 +401,28 @@ export default {
       //await this.constructSaveTab(this.saveInputTab);
       const temp = this.selectedSelectedInputs;
       for(var elt in temp){
-        await this.passElementBetweenTables(temp[elt], this.selectedInputs, this.inputTab, this.saveInputTab, 1);
+         this.passElementBetweenTables(temp[elt], this.selectedInputs, this.inputTab, this.saveInputTab, 1);
       }
     },
     onClickOutputUnlink: async function(){
       const temp = this.selectedSelectedOutputs;
       for (var elt in temp){
-        await this.passElementBetweenTables(temp[elt], this.selectedOutputs, this.outputTab, this.saveOutputTab, 1);
+         this.passElementBetweenTables(temp[elt], this.selectedOutputs, this.outputTab, this.saveOutputTab, 1);
       }
     },
-    passElementBetweenTables: async function(element, tabIn, tabOut, savedTab, sens){
+    passElementBetweenTables: function(element, tabIn, tabOut, savedTab, sens){
       // sens = 0 : Available -> Linked (savedTab reduces)
       // sens = 1 : Linked -> Available (savedTab grows)
       // tabIn = await Array.from(new Set(tabIn));
-      var index = await tabIn.findIndex((elt)=> (elt == element));
+      var index =  tabIn.findIndex((elt)=> (elt == element));
       if(index > -1){
-        var iIndex = await tabOut.findIndex((elt)=> (elt) == element);
+        var iIndex =  tabOut.findIndex((elt)=> (elt) == element);
         if(iIndex > -1){
-          await tabIn.splice(index,1);
+           tabIn.splice(index,1);
         }
         else{
-          await tabOut.push(tabIn[index]);
-          await tabIn.splice(index, 1);
+           tabOut.push(tabIn[index]);
+           tabIn.splice(index, 1);
         }
       }
       else{
@@ -430,17 +430,17 @@ export default {
       index = -1;
       // await this.constructSaveTab(this.backupInput, this.saveInputTab, this.selectedInputs);
     },
-    constructSaveTab: async function(backup, savedTab, tabSelected){
+    constructSaveTab:  function(backup, savedTab, tabSelected){
 
       savedTab = backup; 
       for (var elt in tabSelected){
-        var index = await savedTab.findIndex((obj) => (obj == tabSelected[elt]));
+        var index =  savedTab.findIndex((obj) => (obj == tabSelected[elt]));
         if(index > -1){
-          await savedTab.splice(index, 1);
+           savedTab.splice(index, 1);
         }
       }
     },
-    inputSearchOnTable: async function() {
+    inputSearchOnTable:  function() {
       var lowerSearch = this.inputSearch.toString().toLowerCase();
       var tempTab = [];
 
@@ -465,7 +465,7 @@ export default {
       for (let elt2 in this.selectedInputs){
         var index = tempTab.findIndex((obj) => (obj == this.selectedInputs[elt2]));
         if(index > -1){
-          await tempTab.splice(index, 1);
+           tempTab.splice(index, 1);
         }
       }
       this.inputTab = tempTab;
