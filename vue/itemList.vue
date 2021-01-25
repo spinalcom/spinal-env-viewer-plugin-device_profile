@@ -40,8 +40,11 @@ with this file. If not, see
             
               <md-table-toolbar max-width="1200">
                 <h1 class="md-title">Item List</h1>
+
+                <md-button class="buttonExport" @click="exportJSON">Export JSON</md-button>
                 
-                <md-button class="md-dense md-raised md-primary" @click="importBOGFile">Import BOG file</md-button>
+                <!-- <md-button class="md-dense md-raised md-primary" @click="importBOGFile">Import BOG file</md-button> -->
+                <md-button class="buttonImportBOG" @click="importBOGFile">Import BOG file</md-button> 
 
                 <md-button class="md-icon-button md-raised md-accent" @click="clearItemList">
                   <md-icon>delete_forever</md-icon>
@@ -327,7 +330,7 @@ export default {
         const childOfTab = await realParentNode.getChildren("hasTempTab");
         bogTab = childOfTab[0].info.tab;
         await DeviceHelper.clearItems(this.parentId);
-        await DeviceHelper.generateItemFromBOG(this.parentId, bogTab);
+        this.users = await DeviceHelper.generateItemFromBOG(this.parentId, bogTab);
         await DeviceHelper.clearLinks(this.parentId, "hasTempTab", SPINAL_RELATION_PTR_LST_TYPE);
         this.dialogImportBogFile = false;
         this.dialog = true;
@@ -366,6 +369,10 @@ export default {
         }
         reader.readAsText(event.target.files[0]);
       })
+    },
+    exportJSON: async function(){
+      await DeviceHelper.clearLinks(this.parentId, "hasTempTab", SPINAL_RELATION_PTR_LST_TYPE);
+      await DeviceHelper.exportJSONItemList(this.parentId);
     }
   },
 };
@@ -384,6 +391,12 @@ export default {
 .md-table-row{
   justify-content: center;
   align-items: center;
+}
+.buttonExport{
+  background-color: green;
+}
+.buttonImportBOG{
+  background-color: dodgerblue;
 }
 
 </style>

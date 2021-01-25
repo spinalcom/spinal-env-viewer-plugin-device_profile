@@ -23,6 +23,7 @@
  */
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+import Axios from "axios";
 import { SpinalContext, SpinalGraphService, SpinalNode, SPINAL_RELATION_PTR_LST_TYPE } from "spinal-env-viewer-graph-service";
 import { PART_RELATION_NAME, PART_RELATION_TYPE, DEVICE_RELATION_NAME, DEVICE_RELATION_TYPE, DEVICE_TYPE, DEVICE_PROFILES_TYPE } from "../constants";
 
@@ -295,9 +296,69 @@ class DeviceHelper {
     console.log("conversion au format JSON");
     console.log(JSON.stringify(item_list));
 
-    const dataToExport = new Blob([JSON.stringify(item_list)], { type: ".json" });
+    const blobDataToExport = new Blob([JSON.stringify(item_list)], { type: ".json" });
     console.log("blob");
-    console.log(dataToExport);
+    console.log(blobDataToExport);
+
+    var link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blobDataToExport);
+    link.download = "item_list.json";
+    link.click();
+    link.remove()
+    
+
+
+
+  }
+
+  static async exportJSONItemList(nodeId){
+
+    var item_list = [];
+
+    const node = SpinalGraphService.getRealNode(nodeId);
+    const itemsId = node.getChildrenIds();
+
+    for (var it in itemsId){
+      const item = await SpinalGraphService.getNodeAsync(itemsId[it]);
+      // console.log(item);
+      item_list.push({
+        name: item.name._data,
+        type: item.itemType._data,
+        maitre: item.maitre._data,
+        inputs: [],
+        outputs: []
+      });
+
+      const inputsNodeId = (await SpinalGraphService.getChildren(item.id, "hasInputs"))[0].childrenIds;
+      for (var ids in inputsNodeId){
+        const input = await SpinalGraphService.getNodeAsync(inputsNodeId[ids]);
+        item_list[it].inputs.push({
+          name: input.name._data,
+          IDX: input.IDX._data,
+          type: input.type._data
+        });
+      }
+
+
+      const outputsNodeId = (await SpinalGraphService.getChildren(item.id, "hasOutputs"))[0].childrenIds;
+      for (var idss in outputsNodeId){
+        const output = await SpinalGraphService.getNodeAsync(outputsNodeId[idss]);
+        item_list[it].outputs.push({
+          name: output.name._data,
+          IDX: output.IDX._data,
+          type: output.type._data
+        });
+      }
+    }
+
+    const blobDataToExport = new Blob([JSON.stringify(item_list)], { type: ".json" });
+
+    var link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blobDataToExport);
+    link.download = "item_list.json";
+    link.click();
+    link.remove()
+    
 
 
 
@@ -628,6 +689,7 @@ class DeviceHelper {
   static async generateItemFromBOG(parentId, tab){
     return DeviceHelper.initialize()
       .then(async result => {
+        let returnedTab = [];
         // console.log(tab);
 
     // get bacnetValues node
@@ -689,6 +751,14 @@ class DeviceHelper {
       }, undefined);
       const nodeCreated = await SpinalGraphService.addChildInContext(parentId, itemId, DeviceHelper.contextId,
         "hasItem", SPINAL_RELATION_PTR_LST_TYPE);
+
+        returnedTab.push({
+          name: item_name,
+          maitre: false,
+          itemType: item_type,
+          namingConvention: item_name,
+          nodeId: itemId
+        });
 
         // add inputs node
         const inputsId = SpinalGraphService.createNode({
@@ -789,7 +859,7 @@ class DeviceHelper {
 
     }
     
-
+      return returnedTab;
   })
 
   }
