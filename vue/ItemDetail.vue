@@ -295,6 +295,13 @@ export default {
 
       this.namingConvention = (await DeviceHelper.itemDetailInfos(option.selectedNode)).namingConvention;
       this.maitre = (await DeviceHelper.itemDetailInfos(option.selectedNode)).maitre;
+
+      // console.log("input, output, selected Inputs, selected Outputs");
+      // console.log(this.inputTab);
+      // console.log(this.outputTab);
+      // console.log(this.selectedInputs);
+      // console.log(this.selectedOutputs);
+      // console.log("end logs");
     },
     arrangeTabs: async function () {
       for (var elt in this.ioTab.NetworkValue) {

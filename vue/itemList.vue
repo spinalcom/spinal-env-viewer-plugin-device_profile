@@ -63,18 +63,21 @@ with this file. If not, see
                   item.itemType
                 }}</md-table-cell>
 
-                <md-table-cell md-label="BIM Naming Convention" md-sort-by="BIM Naming Convention">{{
+                <md-table-cell md-label="Monitoring">
+                  <md-checkbox class="md-primary" @change="onChangeMonitoring">{{item.monitoring}}</md-checkbox>
+                </md-table-cell>
+
+                <md-table-cell md-label="BIM Naming Convention" md-edit=true md-sort-by="BIM Naming Convention">{{
                   item.namingConvention
                 }}</md-table-cell>
 
 
-                <md-table-cell md-label="Détails">
-             
-                 <md-button class="md-icon-button" @click ="onDetails(item)" > 
-        <md-icon>arrow_right_alt</md-icon>
-      </md-button>
+                <md-table-cell md-label="Details">
+                  <md-button class="md-icon-button" @click ="onDetails(item)" > 
+                    <md-icon>arrow_right_alt</md-icon>
+                  </md-button>
+                </md-table-cell>
 
-</md-table-cell>
               </md-table-row>
             </md-table>
           </div>
@@ -190,6 +193,7 @@ export default {
       name: null,
       maitre: false,
       type: null,
+      monitoring: false,
       namingConvention: ""
     },
     single: null,
@@ -237,7 +241,7 @@ export default {
 
 
       
-      console.log("clicked", item);
+      // console.log("clicked", item);
 
       var paramSent = new Object();
       const graphOfSelectedNode = await SpinalGraphService.getGraph(this.selected.nodeId);
@@ -373,6 +377,9 @@ export default {
     exportJSON: async function(){
       await DeviceHelper.clearLinks(this.parentId, "hasTempTab", SPINAL_RELATION_PTR_LST_TYPE);
       await DeviceHelper.exportJSONItemList(this.parentId);
+    },
+    onChangeMonitoring: async function(){
+      console.log("change monitoring");
     }
   },
 };

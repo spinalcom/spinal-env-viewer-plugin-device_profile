@@ -55,8 +55,8 @@ export class ButtonAddDeviceProfileContext extends SpinalContextApp {
       return Promise.resolve(true);
     }
   //4
-    action() {
-
+    async action() {
+      // await DeviceHelper.scanNetwork();
       DeviceHelper.initialize ();
       
     }
