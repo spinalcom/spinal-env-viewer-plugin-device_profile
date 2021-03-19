@@ -127,7 +127,7 @@ class DeviceHelper {
     SpinalGraphService._addNode(parentNode);
 
     let tab = await AttributeService.getAttributesByCategory(parentNode, categoryName);
-    console.log(tab);
+    // console.log(tab);
     for (let elt in tab){
       if(tab[elt].label._data == label) return tab[elt].value._data;
     }
@@ -513,6 +513,7 @@ class DeviceHelper {
       if(childNode.type._data == "item"){
         let maitreInfos = await DeviceHelper.getAttributeByLabelAndCategory(children[elt], "default", "maitre");
         let namingConventionInfos = await DeviceHelper.getAttributeByLabelAndCategory(children[elt], "default", "namingConvention");
+        //changement ici
         tab2.push({
                 name: childNode.name._data,
                 // maitre: childNode.maitre._data,
@@ -556,7 +557,7 @@ class DeviceHelper {
           }, undefined)
           let outputsNode = await SpinalGraphService.addChildInContext(generatedItemId, outputNodeId, DeviceHelper.contextId, "hasOutputs", SPINAL_RELATION_PTR_LST_TYPE);
           // Shared Attributes that say the linked bacnetValues are monitored
-          await DeviceHelper.create_Attributes(outputsNode, { monitoring : true}, "Monitoring");
+          // await DeviceHelper.create_Attributes(outputsNode, { monitoring : true}, "Monitoring");
           // add item attributes
 
           DeviceHelper.create_Attributes(itemNode, { maitre: isMaitre, namingConvention: namingConvention}, "default");
@@ -913,7 +914,7 @@ class DeviceHelper {
         }, undefined)
         let outputsNode = await SpinalGraphService.addChildInContext(itemId, outputsId, DeviceHelper.contextId, "hasOutputs", SPINAL_RELATION_PTR_LST_TYPE);
         // Shared Attribute to say that the linked bacnetVlaues are Monitored
-        await DeviceHelper.create_Attributes(outputsNode, { monitoring : true}, "Monitoring");
+        // await DeviceHelper.create_Attributes(outputsNode, { monitoring : true}, "Monitoring");
         
         // generate links
         for (let linkElt = 0 ; linkElt < linksLength; linkElt++){
@@ -928,16 +929,16 @@ class DeviceHelper {
                 if(parseInt(nodeToCheck.IDX._data) + 1 == tabLinks[linkElt].idx._data){
                   await SpinalGraphService.addChildInContext(inputsId, idsToLink[id], DeviceHelper.contextId, "hasInput", SPINAL_RELATION_PTR_LST_TYPE);
                   // monitoring
-                  let nodeMonitored = SpinalGraphService.getRealNode(idsToLink[id]);
-                  await DeviceHelper.create_Attributes(nodeMonitored, { monitoring : true}, "Monitoring");
+                  // let nodeMonitored = SpinalGraphService.getRealNode(idsToLink[id]);
+                  // await DeviceHelper.create_Attributes(nodeMonitored, { monitoring : true}, "Monitoring");
                 }
               }
               else{
                 if(((parseInt(nodeToCheck.IDX._data) + 1) >= tabLinks[linkElt].idx._data) && ((parseInt(nodeToCheck.IDX._data) + 1) < parseInt(tabLinks[linkElt].idx._data) + suiteAdded)){
                   await SpinalGraphService.addChildInContext(inputsId, idsToLink[id], DeviceHelper.contextId, "hasInput", SPINAL_RELATION_PTR_LST_TYPE);
                   // monitoring
-                  let nodeMonitored = SpinalGraphService.getRealNode(idsToLink[id]);
-                  await DeviceHelper.create_Attributes(nodeMonitored, { monitoring : true}, "Monitoring");
+                  // let nodeMonitored = SpinalGraphService.getRealNode(idsToLink[id]);
+                  // await DeviceHelper.create_Attributes(nodeMonitored, { monitoring : true}, "Monitoring");
                 }
               }
             }
@@ -1088,10 +1089,207 @@ client.readPropertyMultiple('192.168.1.43', requestArray, (err, value) => {
 
   }
 
+  /////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////// MONITORING CONFIGURATION /////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////
+
+  static async generateMonitoringGraph(parentId){
+    return DeviceHelper.initialize()
+      .then(async result => {
+        // add Monitoring node : child of device
+        const monitoringNodeId = SpinalGraphService.createNode({
+          name: "Monitoring",
+          type: "deviceMonitoring"
+        }, undefined);
+        // let monitoringNode = await SpinalGraphService.addChildInContext(parentId, monitoringNodeId, DeviceHelper.contextId, "hasMonitoringNode", SPINAL_RELATION_PTR_LST_TYPE);
+        await SpinalGraphService.addChildInContext(parentId, monitoringNodeId, DeviceHelper.contextId, "hasMonitoringNode", SPINAL_RELATION_PTR_LST_TYPE);
+
+        ///////// add basic Interval Times
+
+        // add COV IntervalTime
+        const intervalTimeCOVNodeId = SpinalGraphService.createNode({
+          name: "COV",
+          type: "deviceMonitoringIntervalTime"
+        }, undefined);
+        let intervalTimeCOVNode = await SpinalGraphService.addChildInContext(monitoringNodeId, intervalTimeCOVNodeId, DeviceHelper.contextId, "hasIntervalTimeNode", SPINAL_RELATION_PTR_LST_TYPE);
+        await DeviceHelper.create_Attributes(intervalTimeCOVNode, { Monitoring: true, IntervalTime: "COV" }, "Monitoring");
+
+        // add 5s IntervalTime
+        const intervalTime5000NodeId = SpinalGraphService.createNode({
+          name: "5s",
+          type: "deviceMonitoringIntervalTime"
+        }, undefined);
+        let intervalTime5000Node = await SpinalGraphService.addChildInContext(monitoringNodeId, intervalTime5000NodeId, DeviceHelper.contextId, "hasIntervalTimeNode", SPINAL_RELATION_PTR_LST_TYPE);
+        await DeviceHelper.create_Attributes(intervalTime5000Node, { Monitoring: true, IntervalTime: 5000 }, "Monitoring");
+
+
+      })
+      .catch(err => console.log(err));
+  }
+
+  static async getLinkedOutputBacnetValues_FromMonitoringNodeId(parentId){
+    let itemsIdTab = await this.getItemsId_FromMonitoringNodeId(parentId);
+    let AVBVMSV_Idstab = await this.getListOutputByItem(itemsIdTab);
+    let serializedTab = await this.getSerializedTabByItem(AVBVMSV_Idstab);
+    // console.log(AVBVMSV_Idstab);
+
+    return serializedTab;
+
+  }
+  static async getLinkedOutputBacnetValues_FromItemId(parentId){
+    let tab = [];
+    tab[0] = parentId;
+    let AVBVMSV_Idstab = await this.getListOutputByItem(tab);
+    let serializedTab = await this.getSerializedTabByItem(AVBVMSV_Idstab);
+    // console.log(AVBVMSV_Idstab);
+
+    return serializedTab;
+  }
+
+  static async getItemsId_FromMonitoringNodeId(parentId){
+    let tab = [];
+    let deviceProfileNode = (await SpinalGraphService.getParents(parentId, "hasMonitoringNode"))[0];
+    let itemListNode = (await SpinalGraphService.getChildren(deviceProfileNode.id.get(), "hasItemList"))[0];
+    let itemsNode = (await SpinalGraphService.getChildren(itemListNode.id.get(), "hasItem"));
+    for (let elt in itemsNode){
+      tab.push(itemsNode[elt].id.get());
+    }
+    return tab;
+  }
+
+  static async getListOutputByItem(tab){
+    let AVBVMSV_Idstab = [];
+
+    for(let elt in tab){
+      let realNode = SpinalGraphService.getRealNode(tab[elt]);
+      // console.log(realNode.info.name.get());
+      let outputsNode = (await SpinalGraphService.getChildren(tab[elt], "hasOutputs"))[0];
+      let outputBacnetValuesNode = await SpinalGraphService.getChildren(outputsNode.id.get(), "hasOutput");
+      if(outputBacnetValuesNode.length !=0){
+        let outputTab = []
+        for(let value in outputBacnetValuesNode){
+          outputTab.push(outputBacnetValuesNode[value].id.get());
+        }
+        AVBVMSV_Idstab.push({
+          item_name: realNode.info.name.get(),
+          outputs : outputTab
+        });
+      }
+      
+    }
+    return AVBVMSV_Idstab;
+
+  }
+
+  static async getSerializedTabByItem(tab){
+    let serializedTab = [];
+    for (let elt in tab){
+      let outputsId = tab[elt].outputs;
+      for(let id in outputsId){
+        let intervalTime = "null";
+        // console.log(outputsId[id]);
+        let realNode = SpinalGraphService.getRealNode(outputsId[id]);
+        let intervalTimeNodes = (await SpinalGraphService.getParents(outputsId[id], "hasIntervalTime"));
+        console.log(intervalTimeNodes);
+        if(intervalTimeNodes.length != 0 ){
+          let intervalTimeNode = intervalTimeNodes[0];
+          intervalTime = await this.getAttributeByLabelAndCategory(intervalTimeNode.id._data, "Monitoring", "IntervalTime");
+        }
+        // let tab2 = await AttributeService.getAllAttributes(realNode);
+        let name = await this.getAttributeByLabelAndCategory(outputsId[id], "default", "NAME");
+        // console.log(name);
+        let idx = await this.getAttributeByLabelAndCategory(outputsId[id], "default", "IDX");
+        // console.log(idx);
+        let type = realNode.info.type.get();
+        let title = "undefined_";
+        // console.log(type);
+        switch(type){
+          case "analogValue":
+            title = "AV_";
+            break;
+          case "binaryValue":
+            title = "BV_";
+            break;
+          case "multiStateValue":
+            title = "MSV_";
+            break;
+        }
+        let generic_name = title + (parseInt(idx) + 1);
+        // console.log(generic_name);
+
+        serializedTab.push({
+          generic_name: generic_name,
+          name: name,
+          item_name: tab[elt].item_name,
+          nodeId: realNode.info.id.get(),
+          intervalTime: intervalTime
+        });
+        // (parseInt(json[elt].IDX) + 1),
+      }
+      // console.log(outputsId);
+    }
+    return serializedTab;
+  }
+
+  static async getIntervalTimeList(parentId){
+    let returnTab = [];
+    let intervalTimeNodeTab = await SpinalGraphService.getChildren(parentId, "hasIntervalTimeNode");
+    for(let elt in intervalTimeNodeTab){
+      let intervalTime = await this.getAttributeByLabelAndCategory(intervalTimeNodeTab[elt].id.get(), "Monitoring", "IntervalTime");
+      console.log(intervalTime);
+      returnTab.push({value: intervalTime, nodeId: intervalTimeNodeTab[elt].id.get()});
+    }
+    return returnTab;
+
+
+  }
+
+  static async addIntervalTimeNode(monitoringNodeId, newIntervalTime){
+    return DeviceHelper.initialize()
+      .then(async result => {
+
+        const newIntervalTimeNodeId = SpinalGraphService.createNode({
+          name: newIntervalTime,
+          type: "deviceMonitoringIntervalTime"
+        }, undefined);
+        let newIntervalTimeNode = await SpinalGraphService.addChildInContext(monitoringNodeId, newIntervalTimeNodeId, DeviceHelper.contextId, "hasIntervalTimeNode", SPINAL_RELATION_PTR_LST_TYPE);
+        await DeviceHelper.create_Attributes(newIntervalTimeNode, { Monitoring: true, IntervalTime: parseInt(newIntervalTime) }, "Monitoring");
+
+        let returnTab = {value: parseInt(newIntervalTime), nodeId: newIntervalTimeNodeId}
+        return returnTab;
+
+      })
+      .catch(err => console.log(err));
+  }
+
+  static async clearMonitoringLinks(intervalTimeList){
+    for(let elt in intervalTimeList){
+      await DeviceHelper.clearLinks(intervalTimeList[elt].nodeId, "hasIntervalTime", SPINAL_RELATION_PTR_LST_TYPE);
+    }
+  }
+
+  static async generateMonitoringLinks(tab, intervalTimeList){
+    await DeviceHelper.clearMonitoringLinks(intervalTimeList);
+    return DeviceHelper.initialize().then(() => {
+      // console.log(tab, intervalTimeList);
+      for(let elt in tab){
+        for(let elt2 in intervalTimeList){
+          if(tab[elt].intervalTime == intervalTimeList[elt2].value){
+            SpinalGraphService.addChildInContext(intervalTimeList[elt2].nodeId, tab[elt].nodeId, DeviceHelper.contextId, "hasIntervalTime", SPINAL_RELATION_PTR_LST_TYPE);
+            // console.log("ok", intervalTimeList[elt2].value);
+          }
+        }
+      }
+    })
+    .catch(err => console.log(err));
+}
+  
 
 }
 
-
+// return DeviceHelper.initialize()
+//       .then(async result => {})
+//       .catch(err => console.log(err));
 
 
 

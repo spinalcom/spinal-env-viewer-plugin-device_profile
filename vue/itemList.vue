@@ -64,7 +64,13 @@ with this file. If not, see
                 }}</md-table-cell>
 
                 <md-table-cell md-label="Monitoring">
-                  <md-checkbox class="md-primary" @change="onChangeMonitoring">{{item.monitoring}}</md-checkbox>
+                  <!-- <md-checkbox class="md-primary" @change="onChangeMonitoring">{{item.monitoring}}</md-checkbox> -->
+                  <!-- <md-checkbox class="md-primary" v-model="item.monitoring" >{{item.monitoring}}</md-checkbox> -->
+                  <!-- <md-checkbox class="md-primary" v-model="item.monitoring" ></md-checkbox> -->
+                  <md-button class="md-icon-button" @click="onMonitoring(item)">
+                    <md-icon>menu</md-icon>
+                  </md-button>
+
                 </md-table-cell>
 
                 <md-table-cell md-label="BIM Naming Convention" md-edit=true md-sort-by="BIM Naming Convention">{{
@@ -82,12 +88,14 @@ with this file. If not, see
             </md-table>
           </div>
           <v-card-actions>
-            <v-btn color="red darken-1" flat @click="onCancel">Annuler </v-btn>
+            <v-btn color="red darken-1" flat @click="onCancel">Annuler</v-btn>
             <v-spacer></v-spacer>
             
       <md-button class="md-icon-button md-dense md-raised md-primary" flat @click="onAdd">
         <md-icon>add</md-icon>
       </md-button>
+
+      <v-btn color="green darken-1" flat @click="onSave">Save</v-btn>
 
           </v-card-actions>
 
@@ -145,12 +153,42 @@ with this file. If not, see
           <v-btn color="red darken-1" flat @click="onCancelDialogImport">Annuler </v-btn>
           <v-btn color="green darken-1" flat @click="onSaveDialogImport">Valider </v-btn>
         </v-card-actions>
-
-       
-
-
       </md-dialog>
 
+
+      <!-- <md-dialog class="DialogMonitoring" :md-active.sync="dialogMonitoring">
+        <md-dialog-title>{{this.selected.name}} Endpoints Monitoring Configuration</md-dialog-title>
+
+        <v-card-actions>
+
+          <div>
+            <md-table
+              v-model="monitoringItem"
+              md-sort="name"
+              md-sort-order="asc"
+              md-card
+              md-fixed-header
+            >
+              <md-table-row slot="md-table-row" slot-scope="{ monitoring }" md-selectable="single">
+                <md-table-cell md-label="Generic name" md-sort-by="Generic name">{{
+                  monitoring.generic_name
+                }}</md-table-cell>
+                <md-table-cell md-label="Name" md-sort-by="Name">{{
+                  monitoring.name
+                }}</md-table-cell>
+                <md-table-cell md-label="Interval Time">{{
+                  mmonitoring.intervalTime
+                }}</md-table-cell>
+              </md-table-row>
+            </md-table>
+          </div>
+
+          <v-spacer></v-spacer>
+          <v-btn color="red darken-1" flat @click="onCancelDialogMonitoring">Annuler </v-btn>
+          <v-btn color="green darken-1" flat @click="onSaveDialogMonitoring">Valider </v-btn>
+        </v-card-actions>
+      </md-dialog> -->
+      
         </v-card>
       </v-dialog>
     </v-layout>
@@ -185,7 +223,9 @@ export default {
     dialog2: false,
     other: null,
     dialog3: false,
+    dialogMonitoring: false,
     dialogImportBogFile: false,
+    monitoringItem: [],
     value: [],
     invalidFieldName: true,
     invalidFieldType: true,
@@ -196,6 +236,7 @@ export default {
       monitoring: false,
       namingConvention: ""
     },
+    outputsMonitoring: [],
     single: null,
     tempBlob: null,
     parsedBOGTab: null,
@@ -203,6 +244,7 @@ export default {
   computed: {
     requiredClass1 (){
       return {
+        
         'md-invalid': !(this.invalidFieldName)
       }
     },
@@ -215,7 +257,9 @@ export default {
   methods: {
     initialize: async function (option) {
       this.parentId = await option.selectedNode.id;
+      console.log(option.selectedNode.id);
       this.parentNode = await option.selectedNode;
+      //changement ici
       this.users = await DeviceHelper.listItemInTab(this.parentNode);
     },
     onMouse: function(item){
@@ -237,10 +281,7 @@ export default {
       this.item_added.namingConvention = "";
     },
     onDetails:  async function(item) {
-      this.onSelect(item);
-
-
-      
+      this.onSelect(item);   
       // console.log("clicked", item);
 
       var paramSent = new Object();
@@ -334,6 +375,7 @@ export default {
         const childOfTab = await realParentNode.getChildren("hasTempTab");
         bogTab = childOfTab[0].info.tab;
         await DeviceHelper.clearItems(this.parentId);
+        //changement ici
         this.users = await DeviceHelper.generateItemFromBOG(this.parentId, bogTab);
         await DeviceHelper.clearLinks(this.parentId, "hasTempTab", SPINAL_RELATION_PTR_LST_TYPE);
         this.dialogImportBogFile = false;
@@ -378,9 +420,72 @@ export default {
       await DeviceHelper.clearLinks(this.parentId, "hasTempTab", SPINAL_RELATION_PTR_LST_TYPE);
       await DeviceHelper.exportJSONItemList(this.parentId);
     },
-    onChangeMonitoring: async function(){
-      console.log("change monitoring");
+    // onChangeMonitoring: async function(){
+    //   console.log("change monitoring");
+    // },
+    onSave: async function(){
+
+      
+
+
+      let deviceNode = (await SpinalGraphService.getParents(this.parentId, "hasItemList"))[0];
+      let monitoringNode = (await SpinalGraphService.getChildren(deviceNode.id.get(), "hasMonitoringNode"))[0];
+      let intervalTimeNode1 = (await SpinalGraphService.getChildren(monitoringNode.id.get(), "hasIntervalTimeNode"))[0];
+
+
+      /* 
+      static async getItemsId_FromMonitoringNodeId(parentId){
+    let tab = [];
+    let deviceProfileNode = (await SpinalGraphService.getParents(parentId, "hasMonitoringNode"))[0];
+    let itemListNode = (await SpinalGraphService.getChildren(deviceProfileNode.id.get(), "hasItemList"))[0];
+    let itemsNode = (await SpinalGraphService.getChildren(itemListNode.id.get(), "hasItem"));
+    */
+      let tabToSend = [];
+      for(let elt in this.users){
+        if(this.users[elt].monitoring == true){
+          tabToSend.push(this.users[elt].nodeId);
+        }
+      }
+      let tabIds = await DeviceHelper.getListOutputByItem(tabToSend);
+
+      for(let elt2 in tabIds){
+      let outputsId = tabIds[elt2].outputs;
+      await DeviceHelper.generateMonitoringLinks(intervalTimeNode1.id.get(), outputsId);
+      }
+      this.dialog = false;
+    },
+    
+    onSelect: function(item){
+      if(item != null){
+        this.selected = item;
+      }
+    },
+    onMonitoring: async function(item){
+      this.onSelect(item);
+      console.log(item);
+      let paramSent = new Object() ;
+      let realNode = SpinalGraphService.getRealNode(item.nodeId);
+      paramSent.selectedNode = realNode;
+      paramSent.selectedNode.id = realNode.info.id;
+      spinalPanelManagerService.openPanel("DialogMonitoringDetails", paramSent);
+
+      // this.dialog = false;
+      // let id = item.nodeId;
+      // this.outputsMonitoring = await DeviceHelper.getListOutputByItem(id);
+
+      // console.log(this.outputsMonitoring);
+
+
+    },
+    onCancelDialogMonitoring: function(){
+      this.dialog = true;
+      this.dialogMonitoring = false;
+    },
+    onSaveDialogMonitoring: function(){
+      this.dialog = true;
+      this.dialogMonitoring = false;
     }
+    
   },
 };
 </script>

@@ -157,6 +157,7 @@ export class FileExplorer {
 
                   await DeviceHelper.generateBacNetValues(nodeId, result);
                   await DeviceHelper.generateItem_list(nodeId);
+                  await DeviceHelper.generateMonitoringGraph(nodeId);
                   //  await DeviceHelper.generateLampProfile(nodeId, result);
 
                 }).catch(err => console.log(err));

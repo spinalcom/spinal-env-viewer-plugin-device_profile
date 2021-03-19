@@ -36,10 +36,10 @@ const xml2js = require('xml2js');
 const fs = require('fs');
 
 
-export class ButtonGenerateDeviceGraph extends SpinalContextApp {
+export class ButtonMonitoringConfiguration extends SpinalContextApp {
     constructor() {
-      super("Generate Device Graph", "Generate Device Graph test description", {
-        icon: "fast_forward",
+      super("Monitoring Configuration", "Monitoring Configuration test description", {
+        icon: "ballot",
         icon_type: "in",
         backgroundColor: "#0000FF",
         fontColor: "#FFFFFF"
@@ -48,16 +48,18 @@ export class ButtonGenerateDeviceGraph extends SpinalContextApp {
     }
   
     isShown(option) {
-       if (option.selectedNode.type.get() === 'device') return Promise.resolve(true);
+       if (option.selectedNode.type.get() === 'deviceMonitoring') return Promise.resolve(true);
        else return Promise.resolve(-1);
     }
     async openPanel(option) {
         
-        const node = await SpinalGraphService.getRealNode(option.selectedNode.get().id);
-        const directory = await FileExplorer.getDirectory(node);
-        const file = directory[0];
-        const xmlFile = FileSystem._objects[file._server_id];
-        await FileExplorer.getXmlContent(xmlFile, option.selectedNode.get().id);
+        // const node = await SpinalGraphService.getRealNode(option.selectedNode.get().id);
+        // const directory = await FileExplorer.getDirectory(node);
+        // const file = directory[0];
+        // const xmlFile = FileSystem._objects[file._server_id];
+        // await FileExplorer.getXmlContent(xmlFile, option.selectedNode.get().id);3
+        // console.log(option.selectedNode.id.get());
+        spinalPanelManagerService.openPanel( "DialogMonitoring", option);
         
         
 
