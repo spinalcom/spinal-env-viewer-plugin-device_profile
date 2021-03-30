@@ -467,6 +467,7 @@ export default {
       let realNode = SpinalGraphService.getRealNode(item.nodeId);
       paramSent.selectedNode = realNode;
       paramSent.selectedNode.id = realNode.info.id;
+      paramSent.ACCESS_FROM = "Item_List_Panel";
       spinalPanelManagerService.openPanel("DialogMonitoringDetails", paramSent);
 
       // this.dialog = false;

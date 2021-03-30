@@ -52,20 +52,8 @@ export class ButtonMonitoringConfiguration extends SpinalContextApp {
        else return Promise.resolve(-1);
     }
     async openPanel(option) {
-        
-        // const node = await SpinalGraphService.getRealNode(option.selectedNode.get().id);
-        // const directory = await FileExplorer.getDirectory(node);
-        // const file = directory[0];
-        // const xmlFile = FileSystem._objects[file._server_id];
-        // await FileExplorer.getXmlContent(xmlFile, option.selectedNode.get().id);3
-        // console.log(option.selectedNode.id.get());
-        spinalPanelManagerService.openPanel( "DialogMonitoring", option);
-        
-        
-
-
+        // spinalPanelManagerService.openPanel( "DialogMonitoring", option);
+        option.ACCESS_FROM = "Button_Monitoring_Configuration";
+        spinalPanelManagerService.openPanel( "DialogMonitoringDetails", option);
      }
-
-    
-
   }
