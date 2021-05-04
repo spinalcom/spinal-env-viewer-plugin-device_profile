@@ -148,7 +148,7 @@ export class FileExplorer {
     return new Promise(async (resolve, reject) => {
       xmlFile._ptr.load(path => {
         const server_id = path._server_id;
-        axios.get(`http://localhost:7778/sceen/_?u=${server_id}`, { responseEncoding: 'utf8' }).then(
+        axios.get(`/sceen/_?u=${server_id}`, { responseEncoding: 'utf8' }).then(
           (data) => {
             xml2js.parseStringPromise(data.data, { mergeAttrs: true, explicitArray: false, preserveWhitespace: true })
               .then(result => {
