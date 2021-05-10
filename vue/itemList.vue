@@ -154,41 +154,6 @@ with this file. If not, see
           <v-btn color="green darken-1" flat @click="onSaveDialogImport">Valider </v-btn>
         </v-card-actions>
       </md-dialog>
-
-
-      <!-- <md-dialog class="DialogMonitoring" :md-active.sync="dialogMonitoring">
-        <md-dialog-title>{{this.selected.name}} Endpoints Monitoring Configuration</md-dialog-title>
-
-        <v-card-actions>
-
-          <div>
-            <md-table
-              v-model="monitoringItem"
-              md-sort="name"
-              md-sort-order="asc"
-              md-card
-              md-fixed-header
-            >
-              <md-table-row slot="md-table-row" slot-scope="{ monitoring }" md-selectable="single">
-                <md-table-cell md-label="Generic name" md-sort-by="Generic name">{{
-                  monitoring.generic_name
-                }}</md-table-cell>
-                <md-table-cell md-label="Name" md-sort-by="Name">{{
-                  monitoring.name
-                }}</md-table-cell>
-                <md-table-cell md-label="Interval Time">{{
-                  mmonitoring.intervalTime
-                }}</md-table-cell>
-              </md-table-row>
-            </md-table>
-          </div>
-
-          <v-spacer></v-spacer>
-          <v-btn color="red darken-1" flat @click="onCancelDialogMonitoring">Annuler </v-btn>
-          <v-btn color="green darken-1" flat @click="onSaveDialogMonitoring">Valider </v-btn>
-        </v-card-actions>
-      </md-dialog> -->
-      
         </v-card>
       </v-dialog>
     </v-layout>
@@ -420,26 +385,10 @@ export default {
       await DeviceHelper.clearLinks(this.parentId, "hasTempTab", SPINAL_RELATION_PTR_LST_TYPE);
       await DeviceHelper.exportJSONItemList(this.parentId);
     },
-    // onChangeMonitoring: async function(){
-    //   console.log("change monitoring");
-    // },
     onSave: async function(){
-
-      
-
-
       let deviceNode = (await SpinalGraphService.getParents(this.parentId, "hasItemList"))[0];
       let monitoringNode = (await SpinalGraphService.getChildren(deviceNode.id.get(), "hasMonitoringNode"))[0];
       let intervalTimeNode1 = (await SpinalGraphService.getChildren(monitoringNode.id.get(), "hasIntervalTimeNode"))[0];
-
-
-      /* 
-      static async getItemsId_FromMonitoringNodeId(parentId){
-    let tab = [];
-    let deviceProfileNode = (await SpinalGraphService.getParents(parentId, "hasMonitoringNode"))[0];
-    let itemListNode = (await SpinalGraphService.getChildren(deviceProfileNode.id.get(), "hasItemList"))[0];
-    let itemsNode = (await SpinalGraphService.getChildren(itemListNode.id.get(), "hasItem"));
-    */
       let tabToSend = [];
       for(let elt in this.users){
         if(this.users[elt].monitoring == true){
@@ -469,14 +418,6 @@ export default {
       paramSent.selectedNode.id = realNode.info.id;
       paramSent.ACCESS_FROM = "Item_List_Panel";
       spinalPanelManagerService.openPanel("DialogMonitoringDetails", paramSent);
-
-      // this.dialog = false;
-      // let id = item.nodeId;
-      // this.outputsMonitoring = await DeviceHelper.getListOutputByItem(id);
-
-      // console.log(this.outputsMonitoring);
-
-
     },
     onCancelDialogMonitoring: function(){
       this.dialog = true;

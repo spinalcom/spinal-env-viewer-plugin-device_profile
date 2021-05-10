@@ -36,7 +36,7 @@ import DialogAddDevices from "./vue/addDevices.vue";
 import DialogAddDeviceProfiles from "./vue/addDeviceProfiles.vue";
 import DialogItemList from "./vue/itemList.vue";
 import DialogItemDetail from "./vue/ItemDetail.vue";
-import DialogMonitoring from "./vue/monitoring.vue"
+// import DialogMonitoring from "./vue/monitoring.vue"
 import DialogMonitoringDetails from "./vue/monitoringDetails.vue"
 
 // button files
@@ -114,14 +114,14 @@ SpinalMountExtention.mount( {
   parentContainer: document.body
 } );
 
-SpinalMountExtention.mount( {
-  // name registered.
-  name: "DialogMonitoring",
-  // Vue.extend to create a Compoment constructor
-  vueMountComponent: Vue.extend( DialogMonitoring ),
-  // where to  append the Compoment
-  parentContainer: document.body
-} );
+// SpinalMountExtention.mount( {
+//   // name registered.
+//   name: "DialogMonitoring",
+//   // Vue.extend to create a Compoment constructor
+//   vueMountComponent: Vue.extend( DialogMonitoring ),
+//   // where to  append the Compoment
+//   parentContainer: document.body
+// } );
 
 SpinalMountExtention.mount( {
   // name registered.

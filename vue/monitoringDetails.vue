@@ -94,9 +94,12 @@ with this file. If not, see
                   </md-field>
                 </md-table-cell>
 
-                <md-table-cell md-label="Tags">
-                  {{ item.tags }}
+                <md-table-cell md-label="Disable Monitoring">
+                  <md-button class="md-icon-button" @click="onDisableMonitoring(item)">
+                    <md-icon>delete</md-icon>
+                  </md-button>                
                 </md-table-cell>
+
               </md-table-row>
             </md-table>
           </div>
@@ -150,6 +153,7 @@ export default {
 
   data: () => ({
     users: [],
+    savedUsers: [],
     intervalTimeList: [],
     parentId: null,
     parentNode: null,
@@ -171,6 +175,10 @@ export default {
         this.users = await DeviceHelper.getLinkedOutputBacnetValues_FromItemId(
           option.selectedNode.id
         );
+        this.savedUsers = await DeviceHelper.getLinkedOutputBacnetValues_FromItemId(
+          option.selectedNode.id
+        );
+        console.log("savedusers", this.savedUsers);
         let itemListNode = (
           await SpinalGraphService.getParents(this.parentId, "hasItem")
         )[0];
@@ -198,6 +206,10 @@ export default {
         this.users = await DeviceHelper.getLinkedOutputBacnetValues_FromMonitoringNodeId(
           option.selectedNode.id
         );
+        this.savedUsers = await DeviceHelper.getLinkedOutputBacnetValues_FromMonitoringNodeId(
+          option.selectedNode.id
+        );
+        console.log("savedusers", this.savedUsers);
         this.monitoringNodeId = option.selectedNode.id;
         this.intervalTimeList = await DeviceHelper.getIntervalTimeList(
           option.selectedNode.id
@@ -222,11 +234,16 @@ export default {
       console.log(this.users);
       await DeviceHelper.generateMonitoringLinks(
         this.users,
-        this.intervalTimeList
+        this.intervalTimeList,
+        this.savedUsers
       );
       this.dialog = false;
     },
-    onSelect: function () {},
+    onSelect: function (item) {
+      if(item != null){
+        this.selected = item;
+      }
+    },
     onAddIntervalTime: async function () {
       for (let elt in this.intervalTimeList) {
         if (this.intervalTimeList[elt].value == this.newIntervalTime) {
@@ -243,10 +260,18 @@ export default {
     },
     clearMonitoringConfiguration: async function(){
       console.log(this.users);
-     this.users = await DeviceHelper.clearEndpointsMonitoringConfiguration(this.users);
-    // await DeiceHelper.clearEndpointsMonitoringConfiguration(this.users);
-      // this.users = [];
+      for(let elt in this.users){
+        // let parent = await SpinalGraphService.getParents(this.users[elt].nodeId, "hasIntervalTime");
+        // if(parent.length !=0){
+        //   await DeviceHelper.clearLinksOneByOne(parent[0].id.get(), this.users[elt].nodeId, "hasIntervalTime", SPINAL_RELATION_PTR_LST_TYPE);
+        // }
+        this.users[elt].intervalTime = null;
+      }
     },
+    onDisableMonitoring: async function(item){
+      this.onSelect(item);
+      item.intervalTime = null;
+    }
   },
 };
 </script>

@@ -30,6 +30,7 @@ import Axios from "axios";
 import AttributeService from 'spinal-env-viewer-plugin-documentation-service';
 import { SpinalContext, SpinalGraphService, SpinalNode, SPINAL_RELATION_PTR_LST_TYPE } from "spinal-env-viewer-graph-service";
 import { PART_RELATION_NAME, PART_RELATION_TYPE, DEVICE_RELATION_NAME, DEVICE_RELATION_TYPE, DEVICE_TYPE, DEVICE_PROFILES_TYPE } from "../constants";
+import {spinalEventEmitter} from "spinal-env-viewer-plugin-event-emitter";
 
 
 class DeviceHelper {
@@ -1046,6 +1047,21 @@ class DeviceHelper {
     }
   }
 
+  // REPRENDRE ICI
+  static async clearLinksOneByOne(parentId, childId, relationName, relationType){
+    let realParentNode = SpinalGraphService.getRealNode(parentId);
+    let realChildNode = SpinalGraphService.getRealNode(childId);
+    if(realParentNode.hasRelation(relationName, relationType)){
+      const children = await realParentNode.getChildren(relationName);
+      for(let elt in children){
+        console.log(children[elt]);
+        if(children[elt].info.id.get() == childId){
+          await realParentNode.removeChild(realChildNode, relationName, relationType);
+        }
+      }
+    }
+  }
+
   static async generateTempTab(parentId, tab) {
     return DeviceHelper.initialize()
       .then(async result => {
@@ -1514,17 +1530,68 @@ class DeviceHelper {
     }
   }
 
-  static async generateMonitoringLinks(tab, intervalTimeList) {
-    await DeviceHelper.clearMonitoringLinks(intervalTimeList);
-    return DeviceHelper.initialize().then(() => {
+  // static async generateMonitoringLinks(tab, intervalTimeList, savedtab) {
+  //   await DeviceHelper.clearMonitoringLinks(intervalTimeList);
+  //   return DeviceHelper.initialize().then(() => {
+  //     // console.log(tab, intervalTimeList);
+  //     for (let elt in tab) {
+  //       for (let elt2 in intervalTimeList) {
+  //         if (tab[elt].intervalTime == intervalTimeList[elt2].value) {
+  //           SpinalGraphService.addChildInContext(intervalTimeList[elt2].nodeId, tab[elt].nodeId, DeviceHelper.contextId, "hasIntervalTime", SPINAL_RELATION_PTR_LST_TYPE);
+  //           // console.log("ok", intervalTimeList[elt2].value);
+  //         }
+  //       }
+  //     }
+  //   })
+  //     .catch(err => console.log(err));
+  // }
+
+  static async generateMonitoringLinks(tab, intervalTimeList, savedTab) {
+    // await DeviceHelper.clearMonitoringLinks(intervalTimeList);
+    return DeviceHelper.initialize().then(async result => {
       // console.log(tab, intervalTimeList);
       for (let elt in tab) {
-        for (let elt2 in intervalTimeList) {
-          if (tab[elt].intervalTime == intervalTimeList[elt2].value) {
-            SpinalGraphService.addChildInContext(intervalTimeList[elt2].nodeId, tab[elt].nodeId, DeviceHelper.contextId, "hasIntervalTime", SPINAL_RELATION_PTR_LST_TYPE);
-            // console.log("ok", intervalTimeList[elt2].value);
+        // console.log(tab[elt]);
+        // console.log(savedTab[elt]);
+        // console.log(tab[elt].intervalTime, savedTab[elt].intervalTime);
+        if(tab[elt].intervalTime != savedTab[elt].intervalTime){
+          if(tab[elt].intervalTime == null || tab[elt].intervalTime == "null"){
+            //clear
+            let parent = await SpinalGraphService.getParents(tab[elt].nodeId, "hasIntervalTime");  
+            if(parent.length !=0){
+              await this.clearLinksOneByOne(parent[0].id.get(), tab[elt].nodeId, "hasIntervalTime", SPINAL_RELATION_PTR_LST_TYPE);
+              spinalEventEmitter.emit("deviceProfileContext-ChangeMonitoring", {
+                parentId: null,
+                childId: tab[elt].nodeId,
+                relationName: null,
+                tag: "CLEARED"
+              });
+              // console.log("cleared");
+            }
+            
+          }
+          else{
+            for (let elt2 in intervalTimeList) {
+              if (tab[elt].intervalTime == intervalTimeList[elt2].value) {
+                let parent = await SpinalGraphService.getParents(tab[elt].nodeId, "hasIntervalTime");
+                console.log(parent);
+
+                if(parent.length !=0){
+                  await this.clearLinksOneByOne(parent[0].id.get(), tab[elt].nodeId, "hasIntervalTime", SPINAL_RELATION_PTR_LST_TYPE);
+                }
+                await SpinalGraphService.addChildInContext(intervalTimeList[elt2].nodeId, tab[elt].nodeId, DeviceHelper.contextId, "hasIntervalTime", SPINAL_RELATION_PTR_LST_TYPE);
+                spinalEventEmitter.emit("deviceProfileContext-ChangeMonitoring", {
+                  parentId: intervalTimeList[elt2].nodeId,
+                  childId: tab[elt].nodeId,
+                  relationName: "hasIntervalTime",
+                  tag: "MODIFIED"
+                });
+                // console.log("modified");
+              }
+            }
           }
         }
+        
       }
     })
       .catch(err => console.log(err));
