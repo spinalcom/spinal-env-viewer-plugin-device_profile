@@ -149,7 +149,7 @@ const xml2js = require("xml2js");
 const fs = require("fs");
 
 export default {
-  name: "DialogMonitoringDetails",
+  name: "DialogGlobalSupervision",
 
   data: () => ({
     users: [{}],
@@ -167,54 +167,58 @@ export default {
   computed: {},
   methods: {
     initialize: async function (option) {
+
+      this.parentId = option.selectedNode.id.get();
+      this.parentNode = option.selectedNode;
+      this.users = await DeviceHelper.getGlobalSupervisionConfiguration(this.parentId);
       // 1 : access from ItemList Panel =>
-      if (option.ACCESS_FROM == "Item_List_Panel") {
-        console.log(option);
-        this.parentId = await option.selectedNode.id;
-        this.parentNode = await option.selectedNode;
-        this.users = await DeviceHelper.getLinkedOutputBacnetValues_FromItemId(
-          option.selectedNode.id
-        );
-        this.savedUsers = await DeviceHelper.getLinkedOutputBacnetValues_FromItemId(
-          option.selectedNode.id
-        );
-        console.log("savedusers", this.savedUsers);
-        let itemListNode = (
-          await SpinalGraphService.getParents(this.parentId, "hasItem")
-        )[0];
-        console.log(itemListNode);
-        let deviceNode = (
-          await SpinalGraphService.getParents(
-            itemListNode.id.get(),
-            "hasItemList"
-          )
-        )[0];
-        let monitoringNode = (
-          await SpinalGraphService.getChildren(
-            deviceNode.id.get(),
-            "hasMonitoringNode"
-          )
-        )[0];
-        this.monitoringNodeId = monitoringNode.id.get();
-        this.intervalTimeList = await DeviceHelper.getIntervalTimeList(
-          monitoringNode.id.get()
-        );
-      } else if (option.ACCESS_FROM == "Button_Monitoring_Configuration") {
-        console.log("ok");
-        this.parentId = option.selectedNode.id;
-        this.parentNode = option.selectedNode;
-        this.users = await DeviceHelper.getLinkedOutputBacnetValues_FromMonitoringNodeId(
-          option.selectedNode.id
-        );
-        this.savedUsers = await DeviceHelper.getLinkedOutputBacnetValues_FromMonitoringNodeId(
-          option.selectedNode.id
-        );
-        console.log("savedusers", this.savedUsers);
-        this.monitoringNodeId = option.selectedNode.id;
-        this.intervalTimeList = await DeviceHelper.getIntervalTimeList(
-          option.selectedNode.id
-        );
-      }
+      // if (option.ACCESS_FROM == "Item_List_Panel") {
+      //   console.log(option);
+      //   this.parentId = await option.selectedNode.id;
+      //   this.parentNode = await option.selectedNode;
+      //   this.users = await DeviceHelper.getLinkedOutputBacnetValues_FromItemId(
+      //     option.selectedNode.id
+      //   );
+      //   this.savedUsers = await DeviceHelper.getLinkedOutputBacnetValues_FromItemId(
+      //     option.selectedNode.id
+      //   );
+      //   console.log("savedusers", this.savedUsers);
+      //   let itemListNode = (
+      //     await SpinalGraphService.getParents(this.parentId, "hasItem")
+      //   )[0];
+      //   console.log(itemListNode);
+      //   let deviceNode = (
+      //     await SpinalGraphService.getParents(
+      //       itemListNode.id.get(),
+      //       "hasItemList"
+      //     )
+      //   )[0];
+      //   let monitoringNode = (
+      //     await SpinalGraphService.getChildren(
+      //       deviceNode.id.get(),
+      //       "hasMonitoringNode"
+      //     )
+      //   )[0];
+      //   this.monitoringNodeId = monitoringNode.id.get();
+      //   this.intervalTimeList = await DeviceHelper.getIntervalTimeList(
+      //     monitoringNode.id.get()
+      //   );
+      // } else if (option.ACCESS_FROM == "Button_Monitoring_Configuration") {
+      //   console.log("ok");
+      //   this.parentId = option.selectedNode.id;
+      //   this.parentNode = option.selectedNode;
+      //   this.users = await DeviceHelper.getLinkedOutputBacnetValues_FromMonitoringNodeId(
+      //     option.selectedNode.id
+      //   );
+      //   this.savedUsers = await DeviceHelper.getLinkedOutputBacnetValues_FromMonitoringNodeId(
+      //     option.selectedNode.id
+      //   );
+      //   console.log("savedusers", this.savedUsers);
+      //   this.monitoringNodeId = option.selectedNode.id;
+      //   this.intervalTimeList = await DeviceHelper.getIntervalTimeList(
+      //     option.selectedNode.id
+      //   );
+      // }
 
       // this.users = await DeviceHelper.listItemInTab(this.parentNode);
     },

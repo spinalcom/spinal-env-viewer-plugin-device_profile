@@ -1,6 +1,6 @@
 {
   "name": "spinal-env-viewer-plugin-device_profile",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,6 @@
     "spinal-env-viewer-plugin-forge": "git+https://github.com/spinalcom/spinal-env-viewer-plugin-forge.git",
     "vuetify": "^1.5.16",
     "xml2js": "^0.4.23"
-
   },
   "browserify": {
     "transform": [

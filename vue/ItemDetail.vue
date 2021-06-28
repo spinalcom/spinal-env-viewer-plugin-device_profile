@@ -304,22 +304,31 @@ export default {
       // console.log("end logs");
     },
     arrangeTabs: async function () {
+      // inputs
       for (var elt in this.ioTab.NetworkValue) {
-        // this.inputTab.push(this.ioTab.NetworkValue[elt]);
         this.chooseBetweenTables(this.ioTab.NetworkValue[elt], this.inputsId, this.inputTab, this.selectedInputs, this.backupInput);
       }
+      for (var elt in this.ioTab.AnalogInput) {
+        this.chooseBetweenTables(this.ioTab.AnalogInput[elt], this.inputsId, this.inputTab, this.selectedInputs, this.backupInput);
+      }
+      for (var elt in this.ioTab.BinaryInput) {
+        this.chooseBetweenTables(this.ioTab.BinaryInput[elt], this.inputsId, this.inputTab, this.selectedInputs, this.backupInput);
+      }
+      for (var elt in this.ioTab.MultiStateInput) {
+        this.chooseBetweenTables(this.ioTab.MultiStateInput[elt], this.inputsId, this.inputTab, this.selectedInputs, this.backupInput);
+      }
+      // outputs
       for (var elt in this.ioTab.BinaryValue) {
         this.chooseBetweenTables(this.ioTab.BinaryValue[elt], this.outputsId, this.outputTab, this.selectedOutputs, this.backupOutput);
-        // this.outputTab.push(this.ioTab.BinaryValue[elt]);
       }
       for (var elt in this.ioTab.AnalogValue) {
         this.chooseBetweenTables(this.ioTab.AnalogValue[elt], this.outputsId, this.outputTab, this.selectedOutputs, this.backupOutput);
-
-        // this.outputTab.push(this.ioTab.AnalogValue[elt]);
       }
       for (var elt in this.ioTab.MultiStateValue) {
         this.chooseBetweenTables(this.ioTab.MultiStateValue[elt], this.outputsId, this.outputTab, this.selectedOutputs, this.backupOutput);
-        // this.outputTab.push(this.ioTab.MultiStateValue[elt]);
+      }
+      for (var elt in this.ioTab.AnalogOutput) {
+        this.chooseBetweenTables(this.ioTab.AnalogOutput[elt], this.outputsId, this.outputTab, this.selectedOutputs, this.backupOutput);
       }
 
       this.saveInputTab = this.inputTab;
@@ -421,9 +430,9 @@ export default {
       // sens = 0 : Available -> Linked (savedTab reduces)
       // sens = 1 : Linked -> Available (savedTab grows)
       // tabIn = await Array.from(new Set(tabIn));
-      var index =  tabIn.findIndex((elt)=> (elt == element));
+      var index =  tabIn.findIndex((elt)=> (elt == element || elt.nodeId == element.nodeId));
       if(index > -1){
-        var iIndex =  tabOut.findIndex((elt)=> (elt) == element);
+        var iIndex =  tabOut.findIndex((elt)=> (elt == element || elt.nodeId == element.nodeId));
         if(iIndex > -1){
            tabIn.splice(index,1);
         }

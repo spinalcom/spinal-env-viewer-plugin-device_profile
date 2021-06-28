@@ -36,8 +36,10 @@ import DialogAddDevices from "./vue/addDevices.vue";
 import DialogAddDeviceProfiles from "./vue/addDeviceProfiles.vue";
 import DialogItemList from "./vue/itemList.vue";
 import DialogItemDetail from "./vue/ItemDetail.vue";
-import DialogMonitoring from "./vue/monitoring.vue"
-import DialogMonitoringDetails from "./vue/monitoringDetails.vue"
+// import DialogMonitoring from "./vue/monitoring.vue"
+import DialogMonitoringDetails from "./vue/monitoringDetails.vue";
+import DialogItemSupervision from "./vue/itemSupervision.vue";
+import DialogGlobalSupervision from "./vue/globalSupervision.vue";
 
 // button files
 import { ButtonAddDeviceProfileContext } from "./buttons/ButtonAddDeviceProfileContext";
@@ -48,7 +50,9 @@ import { ButtonGenerateDeviceGraph } from "./buttons/ButtonGenerateDeviceGraph";
 import { ButtonItemList } from "./buttons/ButtonItemList";
 import { ButtonItemDetail } from "./buttons/ButtonItemDetail";
 import { ButtonSaveProfileAsJson } from "./buttons/ButtonSaveProfileAsJson";
-import { ButtonMonitoringConfiguration } from "./buttons/ButtonMonitoringConfiguration"
+import { ButtonMonitoringConfiguration } from "./buttons/ButtonMonitoringConfiguration";
+import { ButtonItemSupervision } from "./buttons/ButtonItemSupervision";
+import { ButtonGlobalSupervision } from "./buttons/ButtonGlobalSupervision";
 
 
 
@@ -68,6 +72,10 @@ spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonItemList()
 spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonItemDetail(), [7]);
 spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonSaveProfileAsJson(), [7]);
 spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonMonitoringConfiguration(), [7]);
+spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonItemSupervision(), [7]);
+spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonGlobalSupervision(), [7]);
+
+
 
 
 
@@ -114,20 +122,38 @@ SpinalMountExtention.mount( {
   parentContainer: document.body
 } );
 
-SpinalMountExtention.mount( {
-  // name registered.
-  name: "DialogMonitoring",
-  // Vue.extend to create a Compoment constructor
-  vueMountComponent: Vue.extend( DialogMonitoring ),
-  // where to  append the Compoment
-  parentContainer: document.body
-} );
+// SpinalMountExtention.mount( {
+//   // name registered.
+//   name: "DialogMonitoring",
+//   // Vue.extend to create a Compoment constructor
+//   vueMountComponent: Vue.extend( DialogMonitoring ),
+//   // where to  append the Compoment
+//   parentContainer: document.body
+// } );
 
 SpinalMountExtention.mount( {
   // name registered.
   name: "DialogMonitoringDetails",
   // Vue.extend to create a Compoment constructor
   vueMountComponent: Vue.extend( DialogMonitoringDetails ),
+  // where to  append the Compoment
+  parentContainer: document.body
+} );
+
+SpinalMountExtention.mount( {
+  // name registered.
+  name: "DialogItemSupervision",
+  // Vue.extend to create a Compoment constructor
+  vueMountComponent: Vue.extend( DialogItemSupervision ),
+  // where to  append the Compoment
+  parentContainer: document.body
+} );
+
+SpinalMountExtention.mount( {
+  // name registered.
+  name: "DialogGlobalSupervision",
+  // Vue.extend to create a Compoment constructor
+  vueMountComponent: Vue.extend( DialogGlobalSupervision ),
   // where to  append the Compoment
   parentContainer: document.body
 } );
