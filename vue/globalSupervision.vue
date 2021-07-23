@@ -192,6 +192,43 @@ with this file. If not, see
               </md-table>
               
             </md-tab>
+            <md-tab id="tab-commands" md-label="Commands">
+              <md-table
+                v-model="users.commands"
+                md-sort="name"
+                md-sort-order="asc"
+                md-card
+                md-fixed-header
+                @md-selected="onSelect"
+              >
+                <md-table-toolbar max-width="1200">
+                  <h1 class="md-title">Commands Supervision Panel</h1>
+                </md-table-toolbar>
+
+                <md-table-row
+                  slot="md-table-row"
+                  slot-scope="{ item }"
+                  md-selectable="single"
+                >
+                  <md-table-cell
+                    md-label="Generic Name"
+                    md-sort-by="Generic Name"
+                  >
+                    {{ item.generic_name }}
+                  </md-table-cell>
+
+                  <md-table-cell md-label="Name" md-sort-by="Name">
+                    {{ item.name }}
+                  </md-table-cell>
+
+                  <md-table-cell md-label="Item Name">
+                    {{ item.item_name }}
+                  </md-table-cell>
+
+                </md-table-row>
+              </md-table>
+              
+            </md-tab>
             <div>
               
             </div>
@@ -250,7 +287,8 @@ export default {
     // usersAlarms: [{}],
     users: {
       measures: [{}],
-      alarms: [{}]
+      alarms: [{}],
+      commands: [{}]
     },
     savedUsers: {
       measures: [{}],
@@ -283,6 +321,7 @@ export default {
       // this.savedUsers = await DeviceHelper.getGlobalSupervisionConfiguration(this.parentId);
       this.globalMeasuresId = (await SpinalGraphService.getChildren(this.parentId, "hasGlobalMeasures"))[0].id.get();
       this.globalAlarmsId = (await SpinalGraphService.getChildren(this.parentId, "hasGlobalAlarms"))[0].id.get();
+      this.globalCommandsId = (await SpinalGraphService.getChildren(this.parentId, "hasGlobalCommands"))[0].id.get();
       // this.users = this.savedUsers;
       // this.globalAlarmsId = await
       // this.globalMeasuresId = 
@@ -406,10 +445,13 @@ export default {
         elt.intervalTime = 0;
       }
     },
-    clearAlarmsSupervisionConfiguration: function(){
-      for (let elt of this.users.alarms){
-        elt.intervalTime = 0;
-      }
+    // clearAlarmsSupervisionConfiguration: function(){
+    //   for (let elt of this.users.alarms){
+    //     elt.intervalTime = 0;
+    //   }
+    // },
+    clearCommandsSupervisionConfiguration: function(){
+      console.log("clearCommandsSupervisionConfiguration to implement");
     },
     clearMonitoringConfiguration: async function(){
       console.log(this.users);

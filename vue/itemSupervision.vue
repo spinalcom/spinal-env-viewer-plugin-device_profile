@@ -37,19 +37,19 @@ with this file. If not, see
                         Linked Measures
                       </span>
                       <v-spacer></v-spacer>
-                        <md-button class="md-icon-button md-raised md-accent" flat @click="onClickTrendLogsUnlink">
+                        <md-button class="md-icon-button md-raised md-accent" flat @click="onClickMeasuresUnlink">
                           <md-icon>link_off</md-icon>
                         </md-button>
 
                     </md-toolbar>
 
                     <md-table
-                      v-model="trendLogsTab"
+                      v-model="MeasuresTab"
                       md-sort="title"
                       md-sort-order="asc"
                       md-card
                       md-fixed-header
-                      @md-selected="onSelectLinkedTrendLog"
+                      @md-selected="onSelectLinkedMeasure"
                     >
                       <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple"
                         md-auto-select>
@@ -91,7 +91,7 @@ with this file. If not, see
                       md-sort-order="asc"
                       md-card
                       md-fixed-header
-                      @md-selected="onSelectAvailableTrendLog"
+                      @md-selected="onSelectAvailableMeasure"
                     >
                       <md-table-row
                         slot="md-table-row"
@@ -342,16 +342,16 @@ export default {
     backupOutput: [],
 
     supervisionId: null,
-    trendLogsId: null,
+    MeasuresId: null,
     commandsId: null,
     alarmsId: null,
     savedEntries: [],
-    trendLogsTab: [],
+    MeasuresTab: [],
     commandsTab: [],
     alarmsTab: [],
     searched: [],
     backupTab: [],
-    selectedLinkedTrendLogs: [],
+    selectedLinkedMeasures: [],
     constMeasure: [],
     constAlarms: [],
     constCommands: []
@@ -387,8 +387,8 @@ export default {
 
       // this.supervisionId = (await SpinalGraphService.getChildren(this.parentId, "hasSupervisionNode"))[0].id.get();
       // console.log(this.supervisionId);
-      // let trendlogs = await SpinalGraphService.getChildren(this.supervisionId, "hasTrendLogs");
-      // console.log(trendlogs);
+      // let Measures = await SpinalGraphService.getChildren(this.supervisionId, "hasMeasures");
+      // console.log(Measures);
 
       // récupération de la liste des inputs / outputs
       this.savedEntries = await DeviceHelper.itemSupervisionInputOutput(
@@ -399,8 +399,8 @@ export default {
       // );
       this.users = this.savedEntries;
 
-      // enlèvement des noeuds trend logs déjà liés à cet item
-      this.trendLogsId = (await SpinalGraphService.getChildren(supervisionId, "hasTrendLogs"))[0].id.get();
+      // enlèvement des noeuds Measures déjà liés à cet item
+      this.MeasuresId = (await SpinalGraphService.getChildren(supervisionId, "hasMeasures"))[0].id.get();
       // enlèvement des noeuds alarms déjà liés à cet item
       this.alarmsId = (await SpinalGraphService.getChildren(supervisionId, "hasAlarms"))[0].id.get();
       // console.log(this.alarmsId);
@@ -409,8 +409,8 @@ export default {
       this.commandsId = (await SpinalGraphService.getChildren(supervisionId, "hasCommands"))[0].id.get();
       // console.log(this.commandsId);
 
-      this.constMeasure = await DeviceHelper.getItemSupervisionLinks(this.trendLogsId, "hasMeasure");
-      for(let eltMes of this.constMeasure) this.passElementBetweenTables(eltMes, this.users, this.trendLogsTab, 0);
+      this.constMeasure = await DeviceHelper.getItemSupervisionLinks(this.MeasuresId, "hasMeasure");
+      for(let eltMes of this.constMeasure) this.passElementBetweenTables(eltMes, this.users, this.MeasuresTab, 0);
 
       this.constAlarms = await DeviceHelper.getItemSupervisionLinks(this.alarmsId, "hasAlarm");
       for(let eltAl of this.constAlarms) this.passElementBetweenTables(eltAl, this.users, this.alarmsTab, 0);
@@ -448,16 +448,16 @@ export default {
       this.backupInput = [];
       this.backupOutput = [];
       this.supervisionId = null;
-      this.trendLogsId = null;
+      this.MeasuresId = null;
       this.commandsId = null;
       this.alarmsId = null;
       this.savedEntries = [];
-      this.trendLogsTab = [];
+      this.MeasuresTab = [];
       this.commandsTab = [];
       this.alarmsTab = [];
       this.searched = [];
       this.backupTab = [];
-      this.selectedLinkedTrendLogs = [];
+      this.selectedLinkedMeasures = [];
       this.constMeasure = [];
       this.constAlarms = [];
       this.constCommands = [];
@@ -501,13 +501,14 @@ export default {
       let globalSupervisionNode = await SpinalGraphService.getChildren(deviceProfileNode[0].id.get(), "hasGlobalSupervision");
       let globalMeasuresNode = await SpinalGraphService.getChildren(globalSupervisionNode[0].id.get(), "hasGlobalMeasures");
       let globalAlarmsNode = await SpinalGraphService.getChildren(globalSupervisionNode[0].id.get(), "hasGlobalAlarms");
+      let globalCommandsNode = await SpinalGraphService.getChildren(globalSupervisionNode[0].id.get(), "hasGlobalCommands");
       let globalMeasuresIntervalTime = await SpinalGraphService.getChildren(globalMeasuresNode[0].id.get(), "hasIntervalTimeNode");
       let globalAlarmsIntervalTime = await SpinalGraphService.getChildren(globalAlarmsNode[0].id.get(), "hasIntervalTimeNode");
       let indexOfNotMonitoredMesure = globalMeasuresIntervalTime.findIndex(elt => elt.name.get() == "Not Monitored");
       let indexOfNotMonitoredAlarm = globalAlarmsIntervalTime.findIndex(elt => elt.name.get() == "Not Monitored");
 
 
-      let measures = this.compareTabs(this.trendLogsTab, this.constMeasure);
+      let measures = this.compareTabs(this.MeasuresTab, this.constMeasure);
       let alarms = this.compareTabs(this.alarmsTab, this.constAlarms);
       console.log("this.alarmsTab");
       console.log(this.alarmsTab);
@@ -519,10 +520,10 @@ export default {
       console.log(this.alarmsId)
       let commands = this.compareTabs(this.commandsTab, this.constCommands);
       // elements to Add
-      for(let addTL of measures.elementsToAdd){
-         await DeviceHelper.generateSupervisionLinks(this.trendLogsId, addTL, "hasMeasure", globalMeasuresIntervalTime[indexOfNotMonitoredMesure].id.get(), "hasIntervalTime");
+      for(let addMes of measures.elementsToAdd){
+         await DeviceHelper.generateSupervisionLinks(this.MeasuresId, addMes, "hasMeasure", globalMeasuresIntervalTime[indexOfNotMonitoredMesure].id.get(), "hasIntervalTime");
       }
-      console.log("sortie boucle trend log");
+      console.log("sortie boucle Measures");
       for(let addAl of alarms.elementsToAdd){
         console.log("entrée boucle for alarms to add");
         console.log(addAl);
@@ -530,17 +531,21 @@ export default {
          await DeviceHelper.generateSupervisionLinks(this.alarmsId, addAl, "hasAlarm", globalAlarmsIntervalTime[indexOfNotMonitoredAlarm].id.get(), "hasIntervalTime");
       }
       for(let addCom of commands.elementsToAdd){
+        console.log("entrée boucle for commands to add");
+        console.log(addCom);
+        await DeviceHelper.generateSupervisionLinks(this.commandsId, addCom, "hasCommand", globalCommandsNode[0].id.get(), "hasGlobalCommand");
         // await DeviceHelper.generateSupervisionLinks(this.commandsId, addCom, "hasCommand");
       }
+      console.log("sortie boucle commands to add");
       // elements to Delete
-      for(let delTL of measures.elementsToDelete){
-        let parentIntervalTime = await SpinalGraphService.getParents(delTL, "hasIntervalTime");
-        let parentSupervisionTrendLogs = await SpinalGraphService.getParents(delTL, "hasMeasure");
+      for(let delMes of measures.elementsToDelete){
+        let parentIntervalTime = await SpinalGraphService.getParents(delMes, "hasIntervalTime");
+        let parentSupervisionMeasures = await SpinalGraphService.getParents(delMes, "hasMeasure");
         if(parentIntervalTime.length != 0){
-          await DeviceHelper.clearLinksOneByOne(parentIntervalTime[0].id.get(), delTL, "hasIntervalTime", SPINAL_RELATION_PTR_LST_TYPE);
+          await DeviceHelper.clearLinksOneByOne(parentIntervalTime[0].id.get(), delMes, "hasIntervalTime", SPINAL_RELATION_PTR_LST_TYPE);
         }
-        if(parentSupervisionTrendLogs.length != 0){
-          await DeviceHelper.clearLinksOneByOne(parentSupervisionTrendLogs[0].id.get(), delTL, "hasMeasure", SPINAL_RELATION_PTR_LST_TYPE);
+        if(parentSupervisionMeasures.length != 0){
+          await DeviceHelper.clearLinksOneByOne(parentSupervisionMeasures[0].id.get(), delMes, "hasMeasure", SPINAL_RELATION_PTR_LST_TYPE);
         }
       }
       for(let delAl of alarms.elementsToDelete){
@@ -554,15 +559,19 @@ export default {
         }
       }
       for(let delCom of commands.elementsToDelete){
-        // let parent = await SpinalGraphService.getParents(delCom, "hasIntervalTime");
-        // if(parent.length != 0){
-        //   await DeviceHelper.clearLinksOneByOne(parent[0].id.get(), delCom, "hasIntervalTime", SPINAL_RELATION_PTR_LST_TYPE);
-        // }
+        let parentGlobalCommands = await SpinalGraphService.getParents(delCom, "hasGlobalCommand");
+        if(parentGlobalCommands.length != 0){
+          await DeviceHelper.clearLinksOneByOne(parentGlobalCommands[0].id.get(), delCom, "hasGlobalCommand", SPINAL_RELATION_PTR_LST_TYPE);
+        }
+        let parentCommands = await SpinalGraphService.getParents(delCom, "hasCommand");
+        if(parentCommands.length !=0){
+          await DeviceHelper.clearLinksOneByOne(parentSupervisionAlarms[0].id.get(), delCom, "hasCommand", SPINAL_RELATION_PTR_LST_TYPE);
+        }
       }
       this.dialog = false;
     },
-    onSelectAvailableTrendLog: async function(items){
-      this.passElementBetweenTables(items, this.users, this.trendLogsTab, 0);
+    onSelectAvailableMeasure: async function(items){
+      this.passElementBetweenTables(items, this.users, this.MeasuresTab, 0);
     },
     onSelectCommand: async function(items){
       this.passElementBetweenTables(items, this.users, this.commandsTab, 0);
@@ -605,29 +614,29 @@ export default {
       var lowerSearch = this.searched.toString().toLowerCase();
       this.users = this.backupTab.filter((elt) => (elt.title.toString().toLowerCase().includes(lowerSearch)) || (elt.name.toString().toLowerCase().includes(lowerSearch)));
     },
-    onSelectLinkedTrendLog: function(items){
-      // this.selectedLinkedTrendLogs.push(items);
-      this.selectedLinkedTrendLogs = items;
-      console.log(this.selectedLinkedTrendLogs);
+    onSelectLinkedMeasure: function(items){
+      // this.selectedLinkedMeasures.push(items);
+      this.selectedLinkedMeasures = items;
+      console.log(this.selectedLinkedMeasures);
     },
     onSelectLinkedAlarm: function(items){
-      // this.selectedLinkedTrendLogs.push(items);
+      // this.selectedLinkedMeasures.push(items);
       this.selectedLinkedAlarms = items;
       console.log(this.selectedLinkedAlarms);
     },
     onSelectLinkedCommand: function(items){
-      // this.selectedLinkedTrendLogs.push(items);
+      // this.selectedLinkedMeasures.push(items);
       this.selectedLinkedCommands = items;
       console.log(this.selectedLinkedCommands);
     },
-    onClickTrendLogsUnlink: function(items){
+    onClickMeasuresUnlink: function(items){
       console.log("je suis dans la fonction");
-       const temp = this.selectedLinkedTrendLogs;
+       const temp = this.selectedLinkedMeasures;
       for (let elt in temp){
-         this.passElementBetweenTables(temp[elt], this.trendLogsTab, this.users, 1);
-        //  this.selectedLinkedTrendLogs.splice(elt, 1);
+         this.passElementBetweenTables(temp[elt], this.MeasuresTab, this.users, 1);
+        //  this.selectedLinkedMeasures.splice(elt, 1);
       }
-      this.selectedLinkedTrendLogs = [];
+      this.selectedLinkedMeasures = [];
     },
     onClickAlarmsUnlink: function(items){
       console.log("je suis dans la fonction");

@@ -627,12 +627,12 @@ class DeviceHelper {
           type: "itemSupervision"
         }, undefined);
         let supervisionNode = await SpinalGraphService.addChildInContext(generatedItemId, supervisionId, DeviceHelper.contextId, "hasSupervisionNode", SPINAL_RELATION_PTR_LST_TYPE);
-        // add measures / Alarm / Command children nodes to supervision Node
-        const measuresId = SpinalGraphService.createNode({
-          name: "Measures",
-          type: "measures"
+        // add TrendLogs / Alarm / Command children nodes to supervision Node
+        const trendLogsId = SpinalGraphService.createNode({
+          name: "Trend Logs",
+          type: "trendLogs"
         }, undefined);
-        await SpinalGraphService.addChildInContext(supervisionId, measuresId, DeviceHelper.contextId, "hasMeasures", SPINAL_RELATION_PTR_LST_TYPE);
+        await SpinalGraphService.addChildInContext(supervisionId, trendLogsId, DeviceHelper.contextId, "hasTrendLogs", SPINAL_RELATION_PTR_LST_TYPE);
         
         const alarmsId = SpinalGraphService.createNode({
           name: "Alarms",
@@ -1085,12 +1085,12 @@ class DeviceHelper {
               type: "itemSupervision"
             }, undefined);
             let supervisionNode = await SpinalGraphService.addChildInContext(itemId, supervisionId, DeviceHelper.contextId, "hasSupervisionNode", SPINAL_RELATION_PTR_LST_TYPE);
-            // add measures / Alarm / Command children nodes to supervision Node
-            const measuresId = SpinalGraphService.createNode({
-              name: "Measures",
-              type: "measures"
+            // add TrendLogs / Alarm / Command children nodes to supervision Node
+            const trendLogsId = SpinalGraphService.createNode({
+              name: "Trend Logs",
+              type: "trendLogs"
             }, undefined);
-            await SpinalGraphService.addChildInContext(supervisionId, measuresId, DeviceHelper.contextId, "hasMeasures", SPINAL_RELATION_PTR_LST_TYPE);
+            await SpinalGraphService.addChildInContext(supervisionId, trendLogsId, DeviceHelper.contextId, "hasTrendLogs", SPINAL_RELATION_PTR_LST_TYPE);
             
             const alarmsId = SpinalGraphService.createNode({
               name: "Alarms",
@@ -1816,7 +1816,7 @@ class DeviceHelper {
 
             if(glob == globalMeasuresNode[0].id.get() ){
               let measuresNode = await SpinalGraphService.getParents(bac.id.get(), "hasMeasure");
-              let supervisionNode = await SpinalGraphService.getParents(measuresNode[0].id.get(), "hasMeasures");
+              let supervisionNode = await SpinalGraphService.getParents(measuresNode[0].id.get(), "hasTrendLogs");
               let itemNode = await SpinalGraphService.getParents(supervisionNode[0].id.get(), "hasSupervisionNode");
               returnTab.measures.push({
                 name: name,
