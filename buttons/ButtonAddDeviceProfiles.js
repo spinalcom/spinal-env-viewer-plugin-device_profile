@@ -28,6 +28,7 @@
 // } = require("spinal-env-viewer-context-menu-service");
 
 import { SpinalContextApp}  from "spinal-env-viewer-context-menu-service";
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 
 const {
   spinalPanelManagerService
@@ -44,6 +45,7 @@ export class ButtonAddDeviceProfiles extends SpinalContextApp {
         fontColor: "#FFFFFF"
       });
       this.action = this.openPanel.bind( this );
+
     }
   
     isShown(option) {
@@ -52,5 +54,6 @@ export class ButtonAddDeviceProfiles extends SpinalContextApp {
     }
     openPanel() {
       spinalPanelManagerService.openPanel( "DialogAddDeviceProfiles");
+      
     }
   }

@@ -88,12 +88,18 @@ export default {
     },
     addDevices: function (name) {
 
+  
       return new Promise(async (resolve) => {
+        
         var nodeCreated = await DeviceHelper.createDevice(this.parentId, name);
-        var dossier = await FileExplorer.createDirectory(nodeCreated);
-        await FileExplorer.addFileUpload(dossier, this.multiple);
-
-      });
+        if (this.multiple !== null){
+          var dossier = await FileExplorer.createDirectory(nodeCreated);
+          await FileExplorer.addFileUpload(dossier, this.multiple);
+          }
+    });
+      
+    
+      
     },
     onCancel: function () {
       this.dialog = false;

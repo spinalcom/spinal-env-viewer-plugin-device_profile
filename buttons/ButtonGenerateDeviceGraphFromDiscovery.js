@@ -32,39 +32,47 @@ const {
   // ,SpinalMountExtention
 } = require("spinal-env-viewer-panel-manager-service");
 
-const xml2js = require('xml2js');
-const fs = require('fs');
+//const xml2js = require('xml2js');
+//const fs = require('fs');
 
 
-export class ButtonGenerateDeviceGraph extends SpinalContextApp {
+export class ButtonGenerateDeviceGraphFromDiscovery extends SpinalContextApp {
     constructor() {
-      super("Generate Device Graph", "Generate Device Graph test description", {
-        icon: "fast_forward",
+      super("Generate Device Graph From Discovery", "Generate Device Graph From Discovery test description", {
+        icon: "cached",
         icon_type: "in",
         backgroundColor: "#0000FF",
         fontColor: "#FFFFFF"
       });
-      this.action = this.openPanel.bind( this );
+      //this.action = this.findBmsDevices.bind( this );
     }
   
     isShown(option) {
       let relationName = SpinalGraphService.getRelationNames(option.selectedNode.id.get());
-      if (option.selectedNode.type.get() === 'device' && relationName[0] === 'hasFiles')
+       if (option.selectedNode.type.get() === 'device' && relationName[0] !== 'hasFiles') 
        return Promise.resolve(true);
        else return Promise.resolve(-1);
     }
-    async openPanel(option) {
-        
-        const node = await SpinalGraphService.getRealNode(option.selectedNode.get().id);
-        const directory = await FileExplorer.getDirectory(node);
-        const file = directory[0];
-        const xmlFile = FileSystem._objects[file._server_id];
-        await FileExplorer.getXmlContent(xmlFile, option.selectedNode.get().id);
-        
-        
 
+    action(option) {
+      let contextId = option.context.id.get();
+      let nodeId = option.selectedNode.id.get();
+      spinalPanelManagerService.openPanel( "DialogGetFromDiscovery", {contextId , nodeId});
+    
+    }
+      
+      //console.log(option.selectedNode.type.get());
+      //console.log(SpinalGraphService.getRealNode(option.selectedNode.id.get()));
+      //console.log(SpinalGraphService.getRelationNames(option.selectedNode.id.get()));
+      //console.log(SpinalGraphService.getContextWithType('Network'));
+      
+    async findBmsDevices(){
+      let ctx = SpinalGraphService.getContextWithType('Network');
+      let startID= ctx[0].info.id.get();
 
-     }
+      let child = await SpinalGraphService.findInContext(startID,ctx[0].info.id.get(),elt => elt.info.type.get()== 'BmsDevice');
+      console.log(child.name._data);
+    }
 
     
 
