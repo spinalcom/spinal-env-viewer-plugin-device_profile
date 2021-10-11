@@ -880,10 +880,6 @@ class DeviceHelper {
         const IDX = await this.getAttributeByLabelAndCategory(inputsNodeId[ids], "default", "IDX");
         item_list[it].inputs.push({
           name: input.name._data,
-<<<<<<< HEAD
-=======
-          // IDX: input.IDX._data,
->>>>>>> af4e85b99389cda5b94a516a5a3c813df33ce1a8
           IDX: IDX,
           type: input.type._data
         });
@@ -930,17 +926,9 @@ class DeviceHelper {
       const item = await SpinalGraphService.getNodeAsync(itemsId[it]);
       const namingConvention = await this.getAttributeByLabelAndCategory(itemsId[it], "default", "namingConvention");
       const maitre = await this.getAttributeByLabelAndCategory(itemsId[it], "default", "maitre");
-<<<<<<< HEAD
       item_list.push({
         name: item.name._data,
         type: item.itemType._data,
-=======
-      // console.log(item);
-      item_list.push({
-        name: item.name._data,
-        type: item.itemType._data,
-        // maitre: item.maitre._data,
->>>>>>> af4e85b99389cda5b94a516a5a3c813df33ce1a8
         maitre: maitre,
         namingConvention: namingConvention,
         inputs: [],
@@ -953,10 +941,6 @@ class DeviceHelper {
         const IDX = await this.getAttributeByLabelAndCategory(inputsNodeId[ids], "default", "IDX")
         item_list[it].inputs.push({
           name: input.name._data,
-<<<<<<< HEAD
-=======
-          // IDX: input.IDX._data,
->>>>>>> af4e85b99389cda5b94a516a5a3c813df33ce1a8
           IDX: IDX,
           type: input.type._data
         });
@@ -969,10 +953,6 @@ class DeviceHelper {
         const IDX = await this.getAttributeByLabelAndCategory(outputsNodeId[idss], "default", "IDX")
         item_list[it].outputs.push({
           name: output.name._data,
-<<<<<<< HEAD
-=======
-          // IDX: output.IDX._data,
->>>>>>> af4e85b99389cda5b94a516a5a3c813df33ce1a8
           IDX: IDX,
           type: output.type._data
         });
@@ -1186,10 +1166,6 @@ class DeviceHelper {
         idx: idx
       });
     }
-<<<<<<< HEAD
-=======
-    // console.log(inputTab);
->>>>>>> af4e85b99389cda5b94a516a5a3c813df33ce1a8
     return inputTab;
 
   }
@@ -1415,10 +1391,6 @@ class DeviceHelper {
     }
   }
 
-<<<<<<< HEAD
-=======
-  // REPRENDRE ICI
->>>>>>> af4e85b99389cda5b94a516a5a3c813df33ce1a8
   static async clearLinksOneByOne(parentId, childId, relationName, relationType){
     let realParentNode = SpinalGraphService.getRealNode(parentId);
     let realChildNode = SpinalGraphService.getRealNode(childId);
@@ -1800,7 +1772,6 @@ class DeviceHelper {
       console.log(tab.length);
     }
 
-<<<<<<< HEAD
     // get Analog Outputs
     let allAOsNode = (await SpinalGraphService.getChildren(child.id.get(), "hasAnalogOutputs"))[0];
     let AOnode = await SpinalGraphService.getChildren(allAOsNode.id.get(), "hasAnalogOutput");
@@ -1818,9 +1789,6 @@ class DeviceHelper {
       }
       console.log(tab.length);
     }
-=======
-  // static async scanNetwork() {
->>>>>>> af4e85b99389cda5b94a516a5a3c813df33ce1a8
 
     // get Multi State Inputs
     let allMSIsNode = (await SpinalGraphService.getChildren(child.id.get(), "hasMultiStateInputs"))[0];
@@ -1843,7 +1811,6 @@ class DeviceHelper {
     // console.log(tab);
     // console.log(child);
 
-<<<<<<< HEAD
 
     return tab;
   }
@@ -1854,31 +1821,6 @@ class DeviceHelper {
     await SpinalGraphService.addChildInContext(parentId, childId, this.contextId, relationName, SPINAL_RELATION_PTR_LST_TYPE);
     await SpinalGraphService.addChildInContext(globalNodeId, childId, this.contextId, relationToGlobalNodeId, SPINAL_RELATION_PTR_LST_TYPE)
   }
-=======
-  //   // Initialize BACStack
-  //   const client = new bacnet({ adpuTimeout: 6000 });
-
-  //   // Discover Devices
-  //   client.on('iAm', (device) => {
-  //     console.log('address: ', device.address);
-  //     console.log('deviceId: ', device.deviceId);
-  //     console.log('maxAdpu: ', device.maxAdpu);
-  //     console.log('segmentation: ', device.segmentation);
-  //     console.log('vendorId: ', device.vendorId);
-  //   });
-  //   client.whoIs();
-
-  //   // Read Device Object
-  //   const requestArray = [{
-  //     objectId: { type: 8, instance: 4194303 },
-  //     properties: [{ id: 8 }]
-  //   }];
-  //   client.readPropertyMultiple('192.168.1.43', requestArray, (err, value) => {
-  //     console.log('value: ', value);
-  //   });
-
-  // }
->>>>>>> af4e85b99389cda5b94a516a5a3c813df33ce1a8
 
   static async getItemSupervisionLinks(parentId, relationName){
     let tab = [];
@@ -2174,7 +2116,6 @@ class DeviceHelper {
     }
   }
 
-<<<<<<< HEAD
   // static async generateMonitoringLinks(tab, intervalTimeList, savedTab) {
   //   return DeviceHelper.initialize().then(async result => {
   //     for (let elt in tab) {
@@ -2213,77 +2154,10 @@ class DeviceHelper {
   //         }
   //       }
         
-=======
-  // static async generateMonitoringLinks(tab, intervalTimeList, savedtab) {
-  //   await DeviceHelper.clearMonitoringLinks(intervalTimeList);
-  //   return DeviceHelper.initialize().then(() => {
-  //     // console.log(tab, intervalTimeList);
-  //     for (let elt in tab) {
-  //       for (let elt2 in intervalTimeList) {
-  //         if (tab[elt].intervalTime == intervalTimeList[elt2].value) {
-  //           SpinalGraphService.addChildInContext(intervalTimeList[elt2].nodeId, tab[elt].nodeId, DeviceHelper.contextId, "hasIntervalTime", SPINAL_RELATION_PTR_LST_TYPE);
-  //           // console.log("ok", intervalTimeList[elt2].value);
-  //         }
-  //       }
->>>>>>> af4e85b99389cda5b94a516a5a3c813df33ce1a8
   //     }
   //   })
   //     .catch(err => console.log(err));
   // }
-<<<<<<< HEAD
-=======
-
-  static async generateMonitoringLinks(tab, intervalTimeList, savedTab) {
-    // await DeviceHelper.clearMonitoringLinks(intervalTimeList);
-    return DeviceHelper.initialize().then(async result => {
-      // console.log(tab, intervalTimeList);
-      for (let elt in tab) {
-        // console.log(tab[elt]);
-        // console.log(savedTab[elt]);
-        // console.log(tab[elt].intervalTime, savedTab[elt].intervalTime);
-        if(tab[elt].intervalTime != savedTab[elt].intervalTime){
-          if(tab[elt].intervalTime == null || tab[elt].intervalTime == "null"){
-            //clear
-            let parent = await SpinalGraphService.getParents(tab[elt].nodeId, "hasIntervalTime");  
-            if(parent.length !=0){
-              await this.clearLinksOneByOne(parent[0].id.get(), tab[elt].nodeId, "hasIntervalTime", SPINAL_RELATION_PTR_LST_TYPE);
-              spinalEventEmitter.emit("deviceProfileContext-ChangeMonitoring", {
-                parentId: null,
-                childId: tab[elt].nodeId,
-                relationName: null,
-                tag: "CLEARED"
-              });
-              // console.log("cleared");
-            }
-            
-          }
-          else{
-            for (let elt2 in intervalTimeList) {
-              if (tab[elt].intervalTime == intervalTimeList[elt2].value) {
-                let parent = await SpinalGraphService.getParents(tab[elt].nodeId, "hasIntervalTime");
-                console.log(parent);
-
-                if(parent.length !=0){
-                  await this.clearLinksOneByOne(parent[0].id.get(), tab[elt].nodeId, "hasIntervalTime", SPINAL_RELATION_PTR_LST_TYPE);
-                }
-                await SpinalGraphService.addChildInContext(intervalTimeList[elt2].nodeId, tab[elt].nodeId, DeviceHelper.contextId, "hasIntervalTime", SPINAL_RELATION_PTR_LST_TYPE);
-                spinalEventEmitter.emit("deviceProfileContext-ChangeMonitoring", {
-                  parentId: intervalTimeList[elt2].nodeId,
-                  childId: tab[elt].nodeId,
-                  relationName: "hasIntervalTime",
-                  tag: "MODIFIED"
-                });
-                // console.log("modified");
-              }
-            }
-          }
-        }
-        
-      }
-    })
-      .catch(err => console.log(err));
-  }
->>>>>>> af4e85b99389cda5b94a516a5a3c813df33ce1a8
 
   static async clearEndpointsMonitoringConfiguration(tab){
     for (let elt in tab){
