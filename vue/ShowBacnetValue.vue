@@ -176,12 +176,12 @@ const lodash = require("lodash");
             //DeviceHelper.generateBacNetValuesFromDiscovery(this.deviceSelected, this.nodeId, this.contextId );
             new Promise(async resolve => {
 
-                  //await DeviceHelper.generateBacNetValues(nodeId, result);
-                  await DeviceHelper.generateBacNetValuesFromDiscovery(this.deviceSelected, this.nodeId, this.contextId );
-                  await DeviceHelper.generateItem_list(this.nodeId);
-                  await DeviceHelper.generateSupervisionGraph(this.nodeId);
+               //await DeviceHelper.generateBacNetValues(nodeId, result);
+               await DeviceHelper.generateBacNetValuesFromDiscovery(this.nodeId, this.contextId, this.deviceSelected, this.networkSelected, this.contextSelected);
+               await DeviceHelper.generateItem_list(this.nodeId);
+               await DeviceHelper.generateSupervisionGraph(this.nodeId);
 
-                }).catch(err => console.log(err));  
+               }).catch(err => console.log(err));  
          }
          //console.log("save : ", save);
          this.DialogGetFromDiscovery = false;

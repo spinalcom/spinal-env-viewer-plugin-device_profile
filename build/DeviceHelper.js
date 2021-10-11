@@ -482,15 +482,15 @@ class DeviceHelper {
 
   // }
 
-  static async generateBacNetValuesFromDiscovery(deviceId, parentNodeId, parentContextId){
+  static async generateBacNetValuesFromDiscovery(parentNodeId, parentContextId, deviceSelectedId, networkSelectedId, contextSelectedId){
     // Get node 1 
-    const selectedDeviceNode = SpinalGraphService.getRealNode(deviceId);
+    const selectedDeviceNode = SpinalGraphService.getRealNode(deviceSelectedId);
 
     // Get context 1
-    const context1 = SpinalGraphService.getContextWithType('Network');
+    const context1 = SpinalGraphService.getRealNode(contextSelectedId);
 
     // Get context 2
-    const context2 = SpinalGraphService.getContextWithType('deviceProfileContext');
+    const context2 = SpinalGraphService.getRealNode(parentContextId);
 
     // Get the parent node
     const parentNode = SpinalGraphService.getRealNode(parentNodeId);
@@ -508,7 +508,7 @@ class DeviceHelper {
           const generatedBacnetValuesnode = await SpinalGraphService.addChildInContext(parentNodeId, generatedBacnetValuesId, parentContextId,
             "hasBacnetValues", SPINAL_RELATION_PTR_LST_TYPE);
 
-          await DeviceHelper.getBacnetValues(context1[0], context2[0], selectedDeviceNode, generatedBacnetValuesnode);
+          await DeviceHelper.getBacnetValues(context1, context2, selectedDeviceNode, generatedBacnetValuesnode);
           
         }).catch(err => console.log(err));
 
