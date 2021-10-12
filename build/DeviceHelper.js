@@ -1496,22 +1496,22 @@ class DeviceHelper {
     let child = (await SpinalGraphService.getChildren(parent2[0].id.get(), "hasBacnetValues"))[0];
 
     // get Binary Values
-    let allBVsNode = (await SpinalGraphService.getChildren(child.id.get(), "hasBinaryValues"))[0];
-    let BVnode = await SpinalGraphService.getChildren(allBVsNode.id.get(), "hasBinaryValue");
-    if(BVnode.length !=0){
-      let title = "BV_";
-      for(let BV of BVnode){
-        let nodeId = BV.id.get();
-        let idx = await this.getAttributeByLabelAndCategory(nodeId, "default", "IDX");
-        let name = await this.getAttributeByLabelAndCategory(nodeId, "default", "NAME");
-        tab.push({
-          title: title + (parseInt(idx) + 1),
-          name: name,
-          nodeId: nodeId
-        });
-      }
-      console.log(tab.length);
-    }
+    // let allBVsNode = (await SpinalGraphService.getChildren(child.id.get(), "hasBinaryValues"))[0];
+    // let BVnode = await SpinalGraphService.getChildren(allBVsNode.id.get(), "hasBinaryValue");
+    // if(BVnode.length !=0){
+    //   let title = "BV_";
+    //   for(let BV of BVnode){
+    //     let nodeId = BV.id.get();
+    //     let idx = await this.getAttributeByLabelAndCategory(nodeId, "default", "IDX");
+    //     let name = await this.getAttributeByLabelAndCategory(nodeId, "default", "NAME");
+    //     tab.push({
+    //       title: title + (parseInt(idx) + 1),
+    //       name: name,
+    //       nodeId: nodeId
+    //     });
+    //   }
+    //   console.log(tab.length);
+    // }
 
     // get Analog Values
     let allAVsNode = (await SpinalGraphService.getChildren(child.id.get(), "hasAnalogValues"))[0];
@@ -1532,94 +1532,94 @@ class DeviceHelper {
     }
 
     // get Multi State Value
-    let allMSVsNode = (await SpinalGraphService.getChildren(child.id.get(), "hasMultiStateValues"))[0];
-    let MSVnode = await SpinalGraphService.getChildren(allMSVsNode.id.get(), "hasMultiStateValue");
-    if(MSVnode.length !=0){
-      let title = "MSV_";
-      for(let MSV of MSVnode){
-        let nodeId = MSV.id.get();
-        let idx = await this.getAttributeByLabelAndCategory(nodeId, "default", "IDX");
-        let name = await this.getAttributeByLabelAndCategory(nodeId, "default", "NAME");
-        tab.push({
-          title: title + (parseInt(idx) + 1),
-          name: name,
-          nodeId: nodeId
-        });
-      }
-      console.log(tab.length);
-    }
+    // let allMSVsNode = (await SpinalGraphService.getChildren(child.id.get(), "hasMultiStateValues"))[0];
+    // let MSVnode = await SpinalGraphService.getChildren(allMSVsNode.id.get(), "hasMultiStateValue");
+    // if(MSVnode.length !=0){
+    //   let title = "MSV_";
+    //   for(let MSV of MSVnode){
+    //     let nodeId = MSV.id.get();
+    //     let idx = await this.getAttributeByLabelAndCategory(nodeId, "default", "IDX");
+    //     let name = await this.getAttributeByLabelAndCategory(nodeId, "default", "NAME");
+    //     tab.push({
+    //       title: title + (parseInt(idx) + 1),
+    //       name: name,
+    //       nodeId: nodeId
+    //     });
+    //   }
+    //   console.log(tab.length);
+    // }
 
     // get Analog Input
-    let allAIsNode = (await SpinalGraphService.getChildren(child.id.get(), "hasAnalogInputs"))[0];
-    let AInode = await SpinalGraphService.getChildren(allAIsNode.id.get(), "hasAnalogInput");
-    if(AInode.length !=0){
-      let title = "AI_";
-      for(let AI of AInode){
-        let nodeId = AI.id.get();
-        let idx = await this.getAttributeByLabelAndCategory(nodeId, "default", "IDX");
-        let name = await this.getAttributeByLabelAndCategory(nodeId, "default", "NAME");
-        tab.push({
-          title: title + (parseInt(idx) + 1),
-          name: name,
-          nodeId: nodeId
-        });
-      }
-      console.log(tab.length);
-    }
+    // let allAIsNode = (await SpinalGraphService.getChildren(child.id.get(), "hasAnalogInputs"))[0];
+    // let AInode = await SpinalGraphService.getChildren(allAIsNode.id.get(), "hasAnalogInput");
+    // if(AInode.length !=0){
+    //   let title = "AI_";
+    //   for(let AI of AInode){
+    //     let nodeId = AI.id.get();
+    //     let idx = await this.getAttributeByLabelAndCategory(nodeId, "default", "IDX");
+    //     let name = await this.getAttributeByLabelAndCategory(nodeId, "default", "NAME");
+    //     tab.push({
+    //       title: title + (parseInt(idx) + 1),
+    //       name: name,
+    //       nodeId: nodeId
+    //     });
+    //   }
+    //   console.log(tab.length);
+    // }
 
     // get Binary Inputs
-    let allBIsNode = (await SpinalGraphService.getChildren(child.id.get(), "hasBinaryInputs"))[0];
-    let BInode = await SpinalGraphService.getChildren(allBIsNode.id.get(), "hasBinaryInput");
-    if(BInode.length !=0){
-      let title = "BI_";
-      for(let BI of BInode){
-        let nodeId = BI.id.get();
-        let idx = await this.getAttributeByLabelAndCategory(nodeId, "default", "IDX");
-        let name = await this.getAttributeByLabelAndCategory(nodeId, "default", "NAME");
-        tab.push({
-          title: title + (parseInt(idx) + 1),
-          name: name,
-          nodeId: nodeId
-        });
-      }
-      console.log(tab.length);
-    }
+    // let allBIsNode = (await SpinalGraphService.getChildren(child.id.get(), "hasBinaryInputs"))[0];
+    // let BInode = await SpinalGraphService.getChildren(allBIsNode.id.get(), "hasBinaryInput");
+    // if(BInode.length !=0){
+    //   let title = "BI_";
+    //   for(let BI of BInode){
+    //     let nodeId = BI.id.get();
+    //     let idx = await this.getAttributeByLabelAndCategory(nodeId, "default", "IDX");
+    //     let name = await this.getAttributeByLabelAndCategory(nodeId, "default", "NAME");
+    //     tab.push({
+    //       title: title + (parseInt(idx) + 1),
+    //       name: name,
+    //       nodeId: nodeId
+    //     });
+    //   }
+    //   console.log(tab.length);
+    // }
 
     // get Analog Outputs
-    let allAOsNode = (await SpinalGraphService.getChildren(child.id.get(), "hasAnalogOutputs"))[0];
-    let AOnode = await SpinalGraphService.getChildren(allAOsNode.id.get(), "hasAnalogOutput");
-    if(AOnode.length !=0){
-      let title = "AO_";
-      for(let AO of AOnode){
-        let nodeId = AO.id.get();
-        let idx = await this.getAttributeByLabelAndCategory(nodeId, "default", "IDX");
-        let name = await this.getAttributeByLabelAndCategory(nodeId, "default", "NAME");
-        tab.push({
-          title: title + (parseInt(idx) + 1),
-          name: name,
-          nodeId: nodeId
-        });
-      }
-      console.log(tab.length);
-    }
+    // let allAOsNode = (await SpinalGraphService.getChildren(child.id.get(), "hasAnalogOutputs"))[0];
+    // let AOnode = await SpinalGraphService.getChildren(allAOsNode.id.get(), "hasAnalogOutput");
+    // if(AOnode.length !=0){
+    //   let title = "AO_";
+    //   for(let AO of AOnode){
+    //     let nodeId = AO.id.get();
+    //     let idx = await this.getAttributeByLabelAndCategory(nodeId, "default", "IDX");
+    //     let name = await this.getAttributeByLabelAndCategory(nodeId, "default", "NAME");
+    //     tab.push({
+    //       title: title + (parseInt(idx) + 1),
+    //       name: name,
+    //       nodeId: nodeId
+    //     });
+    //   }
+    //   console.log(tab.length);
+    // }
 
     // get Multi State Inputs
-    let allMSIsNode = (await SpinalGraphService.getChildren(child.id.get(), "hasMultiStateInputs"))[0];
-    let MSInode = await SpinalGraphService.getChildren(allMSIsNode.id.get(), "hasMultiStateInput");
-    if(MSInode.length !=0){
-      let title = "MSI_";
-      for(let MSI of MSInode){
-        let nodeId = MSI.id.get();
-        let idx = await this.getAttributeByLabelAndCategory(nodeId, "default", "IDX");
-        let name = await this.getAttributeByLabelAndCategory(nodeId, "default", "NAME");
-        tab.push({
-          title: title + (parseInt(idx) + 1),
-          name: name,
-          nodeId: nodeId
-        });
-      }
-      console.log(tab.length);
-    }
+    // let allMSIsNode = (await SpinalGraphService.getChildren(child.id.get(), "hasMultiStateInputs"))[0];
+    // let MSInode = await SpinalGraphService.getChildren(allMSIsNode.id.get(), "hasMultiStateInput");
+    // if(MSInode.length !=0){
+    //   let title = "MSI_";
+    //   for(let MSI of MSInode){
+    //     let nodeId = MSI.id.get();
+    //     let idx = await this.getAttributeByLabelAndCategory(nodeId, "default", "IDX");
+    //     let name = await this.getAttributeByLabelAndCategory(nodeId, "default", "NAME");
+    //     tab.push({
+    //       title: title + (parseInt(idx) + 1),
+    //       name: name,
+    //       nodeId: nodeId
+    //     });
+    //   }
+    //   console.log(tab.length);
+    // }
 
     // console.log(tab);
     // console.log(child);
