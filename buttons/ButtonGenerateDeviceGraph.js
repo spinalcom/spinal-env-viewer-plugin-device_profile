@@ -48,9 +48,7 @@ export class ButtonGenerateDeviceGraph extends SpinalContextApp {
     }
   
     isShown(option) {
-      let relationName = SpinalGraphService.getRelationNames(option.selectedNode.id.get());
-      if (option.selectedNode.type.get() === 'device' && relationName[0] === 'hasFiles')
-       return Promise.resolve(true);
+       if (option.selectedNode.type.get() === 'device') return Promise.resolve(true);
        else return Promise.resolve(-1);
     }
     async openPanel(option) {

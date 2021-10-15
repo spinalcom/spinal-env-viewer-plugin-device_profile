@@ -40,7 +40,6 @@ import DialogItemDetail from "./vue/ItemDetail.vue";
 import DialogMonitoringDetails from "./vue/monitoringDetails.vue";
 import DialogItemSupervision from "./vue/itemSupervision.vue";
 import DialogGlobalSupervision from "./vue/globalSupervision.vue";
-import DialogGetFromDiscovery from "./vue/ShowBacnetValue.vue";
 
 // button files
 import { ButtonAddDeviceProfileContext } from "./buttons/ButtonAddDeviceProfileContext";
@@ -54,7 +53,6 @@ import { ButtonSaveProfileAsJson } from "./buttons/ButtonSaveProfileAsJson";
 import { ButtonMonitoringConfiguration } from "./buttons/ButtonMonitoringConfiguration";
 import { ButtonItemSupervision } from "./buttons/ButtonItemSupervision";
 import { ButtonGlobalSupervision } from "./buttons/ButtonGlobalSupervision";
-import { ButtonGenerateDeviceGraphFromDiscovery } from "./buttons/ButtonGenerateDeviceGraphFromDiscovery";
 
 
 
@@ -76,7 +74,6 @@ spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonSaveProfil
 spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonMonitoringConfiguration(), [7]);
 spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonItemSupervision(), [7]);
 spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonGlobalSupervision(), [7]);
-spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonGenerateDeviceGraphFromDiscovery(), [7]);
 
 
 
@@ -161,11 +158,4 @@ SpinalMountExtention.mount( {
   parentContainer: document.body
 } );
 
-SpinalMountExtention.mount( {
-  // name registered.
-  name: "DialogGetFromDiscovery",
-  // Vue.extend to create a Compoment constructor
-  vueMountComponent: Vue.extend( DialogGetFromDiscovery ),
-  // where to  append the Compoment
-  parentContainer: document.body
-} );
+

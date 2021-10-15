@@ -102,6 +102,7 @@ export class FileExplorer {
 
   static addFileUpload(directory, uploadFileList) {
     const files = [];
+
     for (let i = 0; i < uploadFileList.length; i++) {
       const element = uploadFileList[i];
       let filePath = new Path(element);
@@ -110,7 +111,8 @@ export class FileExplorer {
       directory.push(myFile);
       files.push(myFile);
     }
-    return files;
+
+    return files
   }
 
   static async downloadFile(file, index) {
