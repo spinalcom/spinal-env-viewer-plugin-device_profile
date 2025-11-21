@@ -24,9 +24,137 @@
 
 import { SPINAL_RELATION_LST_PTR_TYPE } from "spinal-env-viewer-graph-service";
 
-export const DEVICE_RELATION_NAME  = 'hasDevice';
-export const DEVICE_RELATION_TYPE  = SPINAL_RELATION_LST_PTR_TYPE;
-export const DEVICE_PROFILES_TYPE  = "deviceProfile";
-export const DEVICE_TYPE  = "device";
-export const PART_RELATION_NAME  = 'hasParts';
-export const PART_RELATION_TYPE  = SPINAL_RELATION_LST_PTR_TYPE;
+export const DEVICE_RELATION_NAME = 'hasDevice';
+export const DEVICE_RELATION_TYPE = SPINAL_RELATION_LST_PTR_TYPE;
+export const DEVICE_PROFILES_TYPE = "deviceProfile";
+export const DEVICE_TYPE = "device";
+export const PART_RELATION_NAME = 'hasParts';
+export const PART_RELATION_TYPE = SPINAL_RELATION_LST_PTR_TYPE;
+
+
+export const endpointTypes = Object.freeze({
+    0: "Analog Input",
+    1: "Analog Output",
+    2: "Analog Values",
+    3: "Binary Input",
+    4: "Binary Output",
+    5: "Binary Values",
+    13: "Multi State Input",
+    14: "Multi State Output",
+    19: "Multi-State Value",
+    55: "Binary Lighting output"
+})
+
+export const bacnetGroupInfo = Object.freeze({
+    "Analog Input": {
+        id: 0,
+        nodeType: "analogInput",
+        childType: "analogInput",
+        parentRelationName: "hasAnalogInput",
+        childRelationName: "hasAnalogInput"
+    },
+    "Analog Output": {
+        id: 1,
+        nodeType: "analogOutput",
+        childType: "analogOutput",
+        parentRelationName: "hasAnalogOutput",
+        childRelationName: "hasAnalogOutput"
+    },
+    "Analog Values": {
+        id: 2,
+        nodeType: "analogValues",
+        childType: "analogValues",
+        parentRelationName: "hasAnalogValues",
+        childRelationName: "hasAnalogValue"
+    },
+    "Binary Input": {
+        id: 3,
+        nodeType: "binaryInput",
+        childType: "binaryInput",
+        parentRelationName: "hasBinaryInput",
+        childRelationName: "hasBinaryInput"
+    },
+    "Binary Output": {
+        id: 4,
+        nodeType: "binaryOutput",
+        childType: "binaryOutput",
+        parentRelationName: "hasBinaryOutput",
+        childRelationName: "hasBinaryOutput"
+    },
+    "Binary Values": {
+        id: 5,
+        nodeType: "binaryValues",
+        childType: "binaryValues",
+        parentRelationName: "hasBinaryValues",
+        childRelationName: "hasBinaryValue"
+    },
+    "Multi State Input": {
+        id: 13,
+        nodeType: "multiStateInput",
+        childType: "multiStateInput",
+        parentRelationName: "hasMultiStateInput",
+        childRelationName: "hasMultiStateInput"
+    },
+    "Multi State Output": {
+        id: 14,
+        nodeType: "multiStateOutput",
+        childType: "multiStateOutput",
+        parentRelationName: "hasMultiStateOutput",
+        childRelationName: "hasMultiStateOutput"
+    },
+    "Multi-State Value": {
+        id: 19,
+        nodeType: "multiStateValue",
+        childType: "multiStateValue",
+        parentRelationName: "hasMultiStateValues",
+        childRelationName: "hasMultiStateValue"
+    },
+    "Binary Lighting output": {
+        id: 55,
+        nodeType: "binaryLightingOutput",
+        childType: "binaryLightingOutput",
+        parentRelationName: "hasBinaryLightingOutput",
+        childRelationName: "hasBinaryLightingOutput"
+    }
+});
+
+
+// export const spinalNodeTypes = Object.freeze({
+//     "Analog Input": "analogInput",
+//     "Analog Output": "analogOutput",
+//     "Analog Values": "analogValues",
+//     "Binary Input": "binaryInput",
+//     "Binary Output": "binaryOutput",
+//     "Binary Values": "binaryValues",
+//     "Multi State Input": "multiStateInput",
+//     "Multi State Output": "multiStateOutput",
+//     "Multi-State Value": "multiStateValue",
+//     "Binary Lighting Output": "binaryLightingOutput",
+// })
+
+// export const relationNames = Object.freeze({
+//     "Analog Input": "hasAnalogInput",
+//     "Analog Output": "hasAnalogOutput",
+//     "Analog Values": "hasAnalogValues",
+//     "Binary Input": "hasBinaryInput",
+//     "Binary Output": "hasBinaryOutput",
+//     "Binary Values": "hasBinaryValues",
+//     "Multi State Input": "hasMultiStateInput",
+//     "Multi State Output": "hasMultiStateOutput",
+//     "Multi-State Value": "hasMultiStateValue",
+//     "Binary Lighting Output": "hasBinaryLightingOutput",
+// })
+
+
+// export const groupNamesToIds = Object.freeze({
+//     "Analog Input": 0,
+//     "Analog Output": 1,
+//     "Analog Values": 2,
+//     "Binary Input": 3,
+//     "Binary Output": 4,
+//     "Binary Values": 5,
+//     "Multi State Input": 13,
+//     "Multi State Output": 14,
+//     "Multi-State Value": 19,
+//     "Binary Lighting Output": 55
+// });

@@ -22,7 +22,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { SpinalContextApp}  from "spinal-env-viewer-context-menu-service";
+import { SpinalContextApp } from "spinal-env-viewer-context-menu-service";
 import { SpinalGraphService } from "spinal-env-viewer-graph-service";
 import { DeviceHelper } from "../build/DeviceHelper";
 import { FileExplorer } from "../FileExplorer";
@@ -37,43 +37,43 @@ const {
 
 
 export class ButtonGenerateDeviceGraphFromDiscovery extends SpinalContextApp {
-    constructor() {
-      super("Generate Device Graph From Discovery", "Generate Device Graph From Discovery test description", {
-        icon: "cached",
-        icon_type: "in",
-        backgroundColor: "#0000FF",
-        fontColor: "#FFFFFF"
-      });
-      //this.action = this.findBmsDevices.bind( this );
-    }
-  
-    isShown(option) {
-      let relationName = SpinalGraphService.getRelationNames(option.selectedNode.id.get());
-       if (option.selectedNode.type.get() === 'device' && relationName[0] !== 'hasFiles') 
-       return Promise.resolve(true);
-       else return Promise.resolve(-1);
-    }
+  constructor() {
+    super("Generate Device Graph From Discovery", "Generate Device Graph From Discovery test description", {
+      icon: "cached",
+      icon_type: "in",
+      backgroundColor: "#0000FF",
+      fontColor: "#FFFFFF"
+    });
+    //this.action = this.findBmsDevices.bind( this );
+  }
 
-    action(option) {
-      let contextId = option.context.id.get();
-      let nodeId = option.selectedNode.id.get();
-      spinalPanelManagerService.openPanel( "DialogGetFromDiscovery", {contextId , nodeId});
-    
-    }
-      
-      //console.log(option.selectedNode.type.get());
-      //console.log(SpinalGraphService.getRealNode(option.selectedNode.id.get()));
-      //console.log(SpinalGraphService.getRelationNames(option.selectedNode.id.get()));
-      //console.log(SpinalGraphService.getContextWithType('Network'));
-      
-    async findBmsDevices(){
-      let ctx = SpinalGraphService.getContextWithType('Network');
-      let startID= ctx[0].info.id.get();
+  isShown(option) {
+    let relationName = SpinalGraphService.getRelationNames(option.selectedNode.id.get());
+    if (option.selectedNode.type.get() === 'device' && relationName[0] !== 'hasFiles')
+      return Promise.resolve(true);
+    else return Promise.resolve(-1);
+  }
 
-      let child = await SpinalGraphService.findInContext(startID,ctx[0].info.id.get(),elt => elt.info.type.get()== 'BmsDevice');
-      console.log(child.name._data);
-    }
-
-    
+  action(option) {
+    let contextId = option.context.id.get();
+    let nodeId = option.selectedNode.id.get();
+    spinalPanelManagerService.openPanel("DialogGetFromDiscovery", { contextId, nodeId });
 
   }
+
+  //console.log(option.selectedNode.type.get());
+  //console.log(SpinalGraphService.getRealNode(option.selectedNode.id.get()));
+  //console.log(SpinalGraphService.getRelationNames(option.selectedNode.id.get()));
+  //console.log(SpinalGraphService.getContextWithType('Network'));
+
+  async findBmsDevices() {
+    let ctx = SpinalGraphService.getContextWithType('Network');
+    let startID = ctx[0].info.id.get();
+
+    let child = await SpinalGraphService.findInContext(startID, ctx[0].info.id.get(), elt => elt.info.type.get() == 'BmsDevice');
+    console.log(child.name._data);
+  }
+
+
+
+}

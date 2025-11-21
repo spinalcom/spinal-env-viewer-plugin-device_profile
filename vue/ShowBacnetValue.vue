@@ -1,103 +1,36 @@
-<!--
-Copyright 2020 SpinalCom - www.spinalcom.com
-
-This file is part of SpinalCore.
-
-Please read all of the following terms and conditions
-of the Free Software license Agreement ("Agreement")
-carefully.
-
-This Agreement is a legally binding contract between
-the Licensee (as defined below) and SpinalCom that
-sets forth the terms and conditions that govern your
-use of the Program. By installing and/or using the
-Program, you agree to abide by all the terms and
-conditions stated or referenced herein.
-
-If you do not agree to abide by these terms and
-conditions, do not demonstrate your acceptance and do
-not install or use the Program.
-You should have received a copy of the license along
-with this file. If not, see
-<http://resources.spinalcom.com/licenses.pdf>.
--->
-
-
 <template>
-   <md-dialog
-      class="mdDialogContainer"
-      :md-active.sync="DialogGetFromDiscovery"
-      @md-closed="closeDialog(false)"
-   >
+   <md-dialog class="mdDialogContainer" :md-active.sync="DialogGetFromDiscovery" @md-closed="closeDialog(false)">
       <md-dialog-title class="dialogTitle">Get bacnetValues from discovery</md-dialog-title>
 
       <md-dialog-content class="content">
-          <link-component
-            v-if="pageSelected === PAGES.selection"
-            :context_title="'Contexts'"
-            :category_title="'Subnetworks'"
-            :group_title="'Bms devices'"
-            :data="data"
-            :profils="networks"
-            :devices="devices"
-            :contextSelected="contextSelected"
-            :profilSelected="networkSelected"
-            :deviceSelected="deviceSelected"
-            :isAutomate="isAutomate"
-            @selectContext="selectContext"
-            @selectProfil="selectNetwork"
-            @selectDevice="selectDevice"
-         ></link-component> 
+         <link-component v-if="pageSelected === PAGES.selection" :context_title="'Contexts'"
+            :category_title="'Subnetworks'" :group_title="'Bms devices'" :data="data" :profils="networks"
+            :devices="devices" :contextSelected="contextSelected" :profilSelected="networkSelected"
+            :deviceSelected="deviceSelected" :isAutomate="isAutomate" @selectContext="selectContext"
+            @selectProfil="selectNetwork" @selectDevice="selectDevice"></link-component>
 
-         <!-- <configuration-template
-            v-else-if="pageSelected === PAGES.configuration"
-            :properties="configuration"
-            :bimData="configuration.bimData"
-            :bmsData="configuration.bmsData"
-         ></configuration-template> -->
-
-         <!-- <confirm-link
-            v-else-if="pageSelected === PAGES.result"
-            :data="result"
-         ></confirm-link> -->
-
-         <div
-            class="state"
-            v-else-if="pageSelected === PAGES.loading"
-         >
+         <div class="state" v-else-if="pageSelected === PAGES.loading">
             <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
          </div>
 
-         <div
-            class="state"
-            v-else-if="pageSelected === PAGES.error"
-         >
+         <div class="state" v-else-if="pageSelected === PAGES.error">
             <md-icon class="md-size-5x">error_outline</md-icon>
          </div>
 
-         <div
-            class="state"
-            v-else-if="pageSelected === PAGES.success"
-         >
+         <div class="state" v-else-if="pageSelected === PAGES.success">
             <md-icon class="md-size-5x">done</md-icon>
          </div>
 
-         
+
 
       </md-dialog-content>
 
       <md-dialog-actions>
-         <md-button
-            class="md-primary"
-            @click="closeDialog(false)"
-         >Close</md-button>
+         <md-button class="md-primary" @click="closeDialog(false)">Close</md-button>
 
 
 
-         <md-button
-            class="md-primary"
-            @click="closeDialog(true)"
-         >Discover</md-button>
+         <md-button class="md-primary" @click="closeDialog(true)">{{ isupdatePage ? 'Update' : 'Discover' }}</md-button>
       </md-dialog-actions>
 
    </md-dialog>
@@ -105,38 +38,27 @@ with this file. If not, see
 </template>
 
 <script>
-import { bimObjectManagerService } from "spinal-env-viewer-bim-manager-service";
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-// import linkAutomateToBmsDeviceUtilities from "../../../js/link_utilities/linkAutomateToBmsDevice";
-import {
-   AttributesUtilities,
-   LinkBmsDeviceService,
-} from "spinal-env-viewer-plugin-network-tree-service";
+
 import networkService from "spinal-env-viewer-plugin-network-tree/src/js/network/networkService";
 import LinkComponent from "./links/LinkComponent.vue";
-//import ConfirmLinkToGTB from "./confirmLinkToGTB.vue";
-import ConfigurationTemplate from "../../spinal-env-viewer-plugin-network-tree/src/vue/components/links/configuration.vue";
-import bmsDataFunction from "../../spinal-env-viewer-plugin-network-tree/src/js/personalized_functions/replace_by.js";
-import bimDataFunction from "../../spinal-env-viewer-plugin-network-tree/src/js/personalized_functions/replace-by.js";
-// import { SpinalForgeViewer } from "spinal-env-viewer-plugin-forge";
 import { DeviceHelper } from "../build/DeviceHelper";
 
 const lodash = require("lodash");
 
 
 
-  export default {
-    name: "Test",
+export default {
+   name: "Test",
 
-    components:{
-       "link-component" : LinkComponent
-    },
-    
-    props: ["onFinised"],
-    
-    data () {
+   components: {
+      "link-component": LinkComponent
+   },
 
-       this.PAGES = {
+   props: ["onFinised"],
+
+   data() {
+
+      this.PAGES = {
          selection: 0,
          configuration: 1,
          result: 2,
@@ -148,47 +70,56 @@ const lodash = require("lodash");
 
       this.contextId;
       this.nodeId;
-      
+
+      this.callback = this.generateProfilesFromDiscovery.bind(this);
 
       return {
-        DialogGetFromDiscovery: true,
-        data: [],
-        networks: [],
-        devices: [],
-        contextSelected: undefined,
-        networkSelected: undefined,
-        deviceSelected: undefined,
-        pageSelected: this.PAGES.selection,
+         DialogGetFromDiscovery: true,
+         data: [],
+         networks: [],
+         devices: [],
+         contextSelected: undefined,
+         networkSelected: undefined,
+         deviceSelected: undefined,
+         pageSelected: this.PAGES.selection,
+         isupdatePage: false,
       }
-    },
-    methods: {
-      
+   },
+   methods: {
+
       onSave: function () {
 
       },
-    
+
       onCancel: function () {
-        this.DialogGetFromDiscovery = false;
+         this.DialogGetFromDiscovery = false;
       },
-      
-      removed: function (save) {
-         if(save){
+
+      generateProfilesFromDiscovery: async function (nodeId, contextId, deviceSelected, networkSelected, contextSelected) {
+         try {
+            //await DeviceHelper.generateBacNetValues(nodeId, result);
+            await DeviceHelper.generateBacNetValuesFromDiscovery(nodeId, contextId, deviceSelected, networkSelected, contextSelected);
+            await DeviceHelper.generateItem_list(nodeId);
+            await DeviceHelper.generateSupervisionGraph(nodeId);
+         } catch (error) {
+            console.error("Error generating profiles from discovery:", error);
+         }
+
+
+      },
+
+      removed: async function (save) {
+         if (save) {
             //DeviceHelper.generateBacNetValuesFromDiscovery(this.deviceSelected, this.nodeId, this.contextId );
-            new Promise(async resolve => {
-
-               //await DeviceHelper.generateBacNetValues(nodeId, result);
-               await DeviceHelper.generateBacNetValuesFromDiscovery(this.nodeId, this.contextId, this.deviceSelected, this.networkSelected, this.contextSelected);
-               await DeviceHelper.generateItem_list(this.nodeId);
-               await DeviceHelper.generateSupervisionGraph(this.nodeId);
-
-               }).catch(err => console.log(err));  
+            // this.generateProfilesFromDiscovery();
+            if (this.callback) await this.callback(this.nodeId, this.contextId, this.deviceSelected, this.networkSelected, this.contextSelected);
          }
          //console.log("save : ", save);
          this.DialogGetFromDiscovery = false;
 
       },
-      
-      closeDialog( closeResult ) {
+
+      closeDialog(closeResult) {
          if (typeof this.onFinised === "function") {
             this.onFinised(closeResult);
          }
@@ -197,12 +128,18 @@ const lodash = require("lodash");
 
       opened(option) {
          //this.DialogGetFromDiscovery = true;
-         this.pageSelected = this.PAGES.loading,
+         this.pageSelected = this.PAGES.loading;
          this.contextId = option.contextId;
          this.nodeId = option.nodeId;
          this.isAutomate = option.isAutomate;
+
+         if (option.callback) {
+            this.callback = option.callback;
+            this.isupdatePage = true;
+         }
+
          this.getAllData();
-         
+
       },
 
 
@@ -241,7 +178,7 @@ const lodash = require("lodash");
          }
       },
 
- 
+
 
       /* Selection */
       selectContext(id) {
@@ -270,10 +207,10 @@ const lodash = require("lodash");
             if (val) this.devices = val.devices;
          }
       },
-      
-  },
 
-  watch: {
+   },
+
+   watch: {
       async contextSelected() {
          await this.updateNetworks();
          this.networkSelected = undefined;
@@ -283,21 +220,23 @@ const lodash = require("lodash");
          this.deviceSelected = undefined;
       },
    }
-  }
+}
 </script>
 
 <style scoped>
-
 .mdDialogContainer {
    width: 60%;
    height: 600px;
 }
+
 .mdDialogContainer .dialogTitle {
    text-align: center;
 }
+
 .mdDialogContainer .content {
    padding: 0 10px 24px 24px;
 }
+
 .mdDialogContainer .content .state {
    width: 100%;
    height: 100%;
@@ -305,6 +244,7 @@ const lodash = require("lodash");
    justify-content: center;
    align-items: center;
 }
+
 .mdDialogContainer .content .progress-bar {
    width: 100%;
    height: 100%;
@@ -313,10 +253,12 @@ const lodash = require("lodash");
    align-items: center;
    justify-content: center;
 }
+
 .mdDialogContainer .content .progress-bar .percent-number {
    font-size: 1.8em;
    margin: 10px 0;
 }
+
 .mdDialogContainer .content .progress-bar .percent-bar {
    width: 90%;
 }

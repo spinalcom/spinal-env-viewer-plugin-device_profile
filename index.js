@@ -22,7 +22,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-
+console.log("SpinalForgePluginBacnet loaded");
 
 import Vue from "vue";
 import Vuetify from 'vuetify';
@@ -41,6 +41,7 @@ import DialogMonitoringDetails from "./vue/monitoringDetails.vue";
 import DialogItemSupervision from "./vue/itemSupervision.vue";
 import DialogGlobalSupervision from "./vue/globalSupervision.vue";
 import DialogGetFromDiscovery from "./vue/ShowBacnetValue.vue";
+import DialogUpdateDeviceProfile from "./vue/updateDeviceProfile.vue";
 
 // button files
 import { ButtonAddDeviceProfileContext } from "./buttons/ButtonAddDeviceProfileContext";
@@ -55,14 +56,14 @@ import { ButtonMonitoringConfiguration } from "./buttons/ButtonMonitoringConfigu
 import { ButtonItemSupervision } from "./buttons/ButtonItemSupervision";
 import { ButtonGlobalSupervision } from "./buttons/ButtonGlobalSupervision";
 import { ButtonGenerateDeviceGraphFromDiscovery } from "./buttons/ButtonGenerateDeviceGraphFromDiscovery";
+import { ButtonUpdateProfileGenerated } from './buttons/ButtonUpdateProfileGenerated';
 
 
+Vue.use(Vuetify);
 
-Vue.use( Vuetify );
-
-                            /* ******* */
-                            /* BUTTONS */
-                            /* ******* */
+/* ******* */
+/* BUTTONS */
+/* ******* */
 
 
 spinalContextMenuService.registerApp("GraphManagerTopBar", new ButtonAddDeviceProfileContext(), [7]);
@@ -77,53 +78,54 @@ spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonMonitoring
 spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonItemSupervision(), [7]);
 spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonGlobalSupervision(), [7]);
 spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonGenerateDeviceGraphFromDiscovery(), [7]);
+spinalContextMenuService.registerApp("GraphManagerSideBar", new ButtonUpdateProfileGenerated(), [7]);
 
 
 
 
 
 
-                          /* ********** */
-                          /* EXTENSIONS */
-                          /* ********** */
+/* ********** */
+/* EXTENSIONS */
+/* ********** */
 
 
-SpinalMountExtention.mount( {
+SpinalMountExtention.mount({
   // name registered.
   name: "DialogAddDeviceProfiles",
   // Vue.extend to create a Compoment constructor
-  vueMountComponent: Vue.extend( DialogAddDeviceProfiles ),
+  vueMountComponent: Vue.extend(DialogAddDeviceProfiles),
   // where to  append the Compoment
   parentContainer: document.body
 }
 );
 
-SpinalMountExtention.mount( {
+SpinalMountExtention.mount({
   // name registered.
   name: "DialogAddDevices",
   // Vue.extend to create a Compoment constructor
-  vueMountComponent: Vue.extend( DialogAddDevices ),
+  vueMountComponent: Vue.extend(DialogAddDevices),
   // where to  append the Compoment
   parentContainer: document.body
-} );
+});
 
-SpinalMountExtention.mount( {
+SpinalMountExtention.mount({
   // name registered.
   name: "DialogItemList",
   // Vue.extend to create a Compoment constructor
-  vueMountComponent: Vue.extend( DialogItemList ),
+  vueMountComponent: Vue.extend(DialogItemList),
   // where to  append the Compoment
   parentContainer: document.body
-} );
+});
 
-SpinalMountExtention.mount( {
+SpinalMountExtention.mount({
   // name registered.
   name: "DialogItemDetail",
   // Vue.extend to create a Compoment constructor
-  vueMountComponent: Vue.extend( DialogItemDetail ),
+  vueMountComponent: Vue.extend(DialogItemDetail),
   // where to  append the Compoment
   parentContainer: document.body
-} );
+});
 
 // SpinalMountExtention.mount( {
 //   // name registered.
@@ -134,38 +136,48 @@ SpinalMountExtention.mount( {
 //   parentContainer: document.body
 // } );
 
-SpinalMountExtention.mount( {
+SpinalMountExtention.mount({
   // name registered.
   name: "DialogMonitoringDetails",
   // Vue.extend to create a Compoment constructor
-  vueMountComponent: Vue.extend( DialogMonitoringDetails ),
+  vueMountComponent: Vue.extend(DialogMonitoringDetails),
   // where to  append the Compoment
   parentContainer: document.body
-} );
+});
 
-SpinalMountExtention.mount( {
+SpinalMountExtention.mount({
   // name registered.
   name: "DialogItemSupervision",
   // Vue.extend to create a Compoment constructor
-  vueMountComponent: Vue.extend( DialogItemSupervision ),
+  vueMountComponent: Vue.extend(DialogItemSupervision),
   // where to  append the Compoment
   parentContainer: document.body
-} );
+});
 
-SpinalMountExtention.mount( {
+SpinalMountExtention.mount({
   // name registered.
   name: "DialogGlobalSupervision",
   // Vue.extend to create a Compoment constructor
-  vueMountComponent: Vue.extend( DialogGlobalSupervision ),
+  vueMountComponent: Vue.extend(DialogGlobalSupervision),
   // where to  append the Compoment
   parentContainer: document.body
-} );
+});
 
-SpinalMountExtention.mount( {
+SpinalMountExtention.mount({
   // name registered.
   name: "DialogGetFromDiscovery",
   // Vue.extend to create a Compoment constructor
-  vueMountComponent: Vue.extend( DialogGetFromDiscovery ),
+  vueMountComponent: Vue.extend(DialogGetFromDiscovery),
   // where to  append the Compoment
   parentContainer: document.body
-} );
+});
+
+
+SpinalMountExtention.mount({
+  // name registered.
+  name: "DialogUpdateDeviceProfile",
+  // Vue.extend to create a Compoment constructor
+  vueMountComponent: Vue.extend(DialogUpdateDeviceProfile),
+  // where to  append the Compoment
+  parentContainer: document.body
+});
