@@ -48,72 +48,72 @@ export const endpointTypes = Object.freeze({
 export const bacnetGroupInfo = Object.freeze({
     "Analog Input": {
         id: 0,
-        nodeType: "analogInput",
+        nodeType: "analogInputs",
         childType: "analogInput",
-        parentRelationName: "hasAnalogInput",
+        parentRelationName: "hasAnalogInputs",
         childRelationName: "hasAnalogInput"
     },
     "Analog Output": {
         id: 1,
-        nodeType: "analogOutput",
+        nodeType: "analogOutputs",
         childType: "analogOutput",
-        parentRelationName: "hasAnalogOutput",
+        parentRelationName: "hasAnalogOutputs",
         childRelationName: "hasAnalogOutput"
     },
     "Analog Values": {
         id: 2,
         nodeType: "analogValues",
-        childType: "analogValues",
+        childType: "analogValue",
         parentRelationName: "hasAnalogValues",
         childRelationName: "hasAnalogValue"
     },
     "Binary Input": {
         id: 3,
-        nodeType: "binaryInput",
+        nodeType: "binaryInputs",
         childType: "binaryInput",
-        parentRelationName: "hasBinaryInput",
+        parentRelationName: "hasBinaryInputs",
         childRelationName: "hasBinaryInput"
     },
     "Binary Output": {
         id: 4,
-        nodeType: "binaryOutput",
+        nodeType: "binaryOutputs",
         childType: "binaryOutput",
-        parentRelationName: "hasBinaryOutput",
+        parentRelationName: "hasBinaryOutputs",
         childRelationName: "hasBinaryOutput"
     },
     "Binary Values": {
         id: 5,
         nodeType: "binaryValues",
-        childType: "binaryValues",
+        childType: "binaryValue",
         parentRelationName: "hasBinaryValues",
         childRelationName: "hasBinaryValue"
     },
     "Multi State Input": {
         id: 13,
-        nodeType: "multiStateInput",
+        nodeType: "multiStateInputs",
         childType: "multiStateInput",
-        parentRelationName: "hasMultiStateInput",
+        parentRelationName: "hasMultiStateInputs",
         childRelationName: "hasMultiStateInput"
     },
     "Multi State Output": {
         id: 14,
-        nodeType: "multiStateOutput",
+        nodeType: "multiStateOutputs",
         childType: "multiStateOutput",
-        parentRelationName: "hasMultiStateOutput",
+        parentRelationName: "hasMultiStateOutputs",
         childRelationName: "hasMultiStateOutput"
     },
     "Multi-State Value": {
         id: 19,
-        nodeType: "multiStateValue",
+        nodeType: "multiStateValues",
         childType: "multiStateValue",
         parentRelationName: "hasMultiStateValues",
         childRelationName: "hasMultiStateValue"
     },
     "Binary Lighting output": {
         id: 55,
-        nodeType: "binaryLightingOutput",
+        nodeType: "binaryLightingOutputs",
         childType: "binaryLightingOutput",
-        parentRelationName: "hasBinaryLightingOutput",
+        parentRelationName: "hasBinaryLightingOutputs",
         childRelationName: "hasBinaryLightingOutput"
     }
 });

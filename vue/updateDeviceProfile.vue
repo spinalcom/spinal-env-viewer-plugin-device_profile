@@ -330,7 +330,7 @@ export default {
 
                     if (res.status === "fulfilled") {
                         const typeId = res.value["typeId"];
-                        const idNetwork = res.value["IDX"] + 1; // IDX is 0 based in profile do we need +1
+                        const idNetwork = parseInt(res.value["IDX"]) + 1; // IDX is 0 based in profile do we need +1
 
                         const key = `${typeId}_${idNetwork}`;
                         profileItemsObj[key] = { ...profileItem, typeId, idNetwork };
