@@ -354,7 +354,7 @@ export default {
             const node = SpinalGraphService.getRealNode(endpointId);
 
             // create name attribute first, to do not duplicate category
-            return serviceDocumentation.addAttributeByCategoryName(node, "default", "name", endpoint.name).then((result) => {
+            return serviceDocumentation.addAttributeByCategoryName(node, "default", "NAME", endpoint.name).then((result) => {
                 const attributes = [
                     { label: "type", value: childtype },
                     { label: "typeId", value: endpoint.typeId },
