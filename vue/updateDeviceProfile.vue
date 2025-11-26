@@ -1,65 +1,37 @@
 <template>
-    <md-dialog :md-active.sync="showDialog" @md-closed="closeDialog(false)">
+    <md-dialog :md-active.sync="showDialog" @md-closed="closeDialog(false)" class="dialogContainer">
         <md-dialog-title class="dialogTitle">Update bacnetValues from discovery</md-dialog-title>
 
-        <md-dialog-content class="mdDialogContainer">
+        <md-dialog-content class="mdDialogContent">
 
             <div class="content" v-if="state === STATES.selection">
 
-                <selectItemsComponent title="select endpoint to create in profile" :endpoints="endpointsToCreate" />
-                <selectItemsComponent title="select endpoint to remove from profile" :endpoints="endpointsToRemove" />
+                <selectItemsComponent title="select endpoint to create in profile" :endpoints="endpointsToCreate"
+                    @selectAll="selectAllToCreate" @deselectAll="deselectAllToCreate" />
+                <selectItemsComponent title="select endpoint to remove from profile" :endpoints="endpointsToRemove"
+                    @selectAll="selectAllToRemove" @deselectAll="deselectAllToRemove" />
 
-                <!-- <div class="section">
-                    <div class="title" title="Endpoint to create in profile">
-                        select endpoint to create in profile
-                    </div>
-                    <div class="listContent">
-                        <md-list class="md-double-line">
-                            <md-list-item v-for="(endpoint, index) in endpointsToCreate" :key="index">
-                                <md-checkbox v-model="toCreate" :value="endpoint.id" />
-                                <div class="md-list-item-text">
-                                    <span>{{ endpoint.name }}</span>
-                                    <span>
-                                        type : {{ getEndpointType(endpoint.typeId) }} - id : {{ endpoint.idNetwork }}
-                                    </span>
-                                </div>
-                            </md-list-item>
-                        </md-list>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <div class="title" title="Endpoint to remove from profile">
-                        select endpoint to remove from profile
-                    </div>
-                    <div class="listContent">
-                        <md-list class="md-double-line">
-                            <md-list-item v-for="(endpoint, index) in endpointsToRemove" :key="index">
-                                <md-checkbox v-model="toRemove" :value="endpoint.id" />
-                                <div class="md-list-item-text">
-                                    <span>{{ endpoint.name }}</span>
-                                    <span>
-                                        type : {{ getEndpointType(endpoint.typeId) }}
-                                        -
-                                        id: {{ endpoint.idNetwork }}
-                                    </span>
-                                </div>
-
-                            </md-list-item>
-                        </md-list>
-                    </div>
-                </div> -->
             </div>
 
             <md-progress-spinner v-else-if="state === STATES.loading" md-mode="indeterminate"></md-progress-spinner>
 
+            <md-empty-state class="md-success" md-icon="done" md-label="All done!" v-else-if="state === STATES.success"
+                :md-description="getSuccessDescription()">
+            </md-empty-state>
+
+            <md-empty-state class="md-accent" md-rounded md-icon="error_outline" md-label="Nothing in Reminders"
+                v-else-if="state === STATES.error" md-description="Something went wrong!">
+                <md-button class="md-primary md-raised" @click="UpdateProfile">Try again</md-button>
+            </md-empty-state>
 
 
         </md-dialog-content>
 
         <md-dialog-actions>
             <md-button class="md-primary" @click="closeDialog(false)">Close</md-button>
-            <md-button class="md-primary" @click="UpdateProfile">Update profile</md-button>
+            <md-button class="md-primary" @click="UpdateProfile" :disabled="disableUpdateBtn">
+                Update profile
+            </md-button>
 
         </md-dialog-actions>
 
@@ -99,8 +71,8 @@ export default {
             state: this.STATES.selection,
             endpointsToCreate: [],
             endpointsToRemove: [],
-            toCreate: [],
-            toRemove: [],
+
+            count: { toCreate: 0, toRemove: 0 },
 
             bacnetValueNode: null, // node that contain all bacnet values in profile
             nodeTypesNodes: [], // bacnet value type nodes in profile (analog Value, binary Value, ...)
@@ -124,6 +96,8 @@ export default {
 
             this.endpointsToCreate = endpointsToCreate;
             this.endpointsToRemove = endpointsToRemove;
+
+
 
             this.state = this.STATES.selection;
         },
@@ -152,8 +126,8 @@ export default {
             const toCreate = this.endpointsToCreate.filter(endpoint => endpoint.checked);
             const toRemove = this.endpointsToRemove.filter(endpoint => endpoint.checked);
 
-            console.log("toCreate", toCreate);
-            console.log("toRemove", toRemove);
+            this.count.toCreate = toCreate.length || 0;
+            this.count.toRemove = toRemove.length || 0;
 
             const promises = [this.createItemsInProfile(this.nodeId, this.contextId, toCreate), this.removeItemsFromProfile(this.nodeId, this.contextId, toRemove)];
             return Promise.all(promises).then((result) => {
@@ -181,6 +155,25 @@ export default {
 
             return Promise.all(promises);
         },
+
+
+        selectAllToCreate: function () {
+            this.endpointsToCreate.forEach(endpoint => this.$set(endpoint, "checked", true));
+        },
+
+        deselectAllToCreate: function () {
+            this.endpointsToCreate.forEach(endpoint => this.$set(endpoint, "checked", false));
+        },
+
+        selectAllToRemove: function () {
+            this.endpointsToRemove.forEach(endpoint => this.$set(endpoint, "checked", true));
+        },
+
+        deselectAllToRemove: function () {
+            this.endpointsToRemove.forEach(endpoint => this.$set(endpoint, "checked", false));
+        },
+
+
 
         removeItemsFromProfile: function (nodeId, contextId, toRemove) {
             if (!this.bacnetValueNode) return Promise.resolve([]);
@@ -371,11 +364,29 @@ export default {
 
         },
 
+        getSuccessDescription() {
+            return `${this.count.toCreate} endpoint(s) created, ${this.count.toRemove} endpoint(s) removed.`;
+        }
+
+    },
+    computed: {
+        disableUpdateBtn() {
+            if (this.state !== this.STATES.selection) return true;
+
+            const toCreateChecked = this.endpointsToCreate.some(endpoint => endpoint.checked);
+            const toRemoveChecked = this.endpointsToRemove.some(endpoint => endpoint.checked);
+            return !(toCreateChecked || toRemoveChecked);
+        }
     }
 }
 </script>
 
 <style scoped>
+dialogContainer {
+    width: 800px;
+    height: 600px;
+}
+
 .dialogTitle {
     height: 50px;
     display: flex;
@@ -383,15 +394,15 @@ export default {
     justify-content: center;
 }
 
-.mdDialogContainer {
-    width: 900px;
-    height: 600px;
+.mdDialogContent {
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.mdDialogContainer .content {
+.mdDialogContent .content {
     width: 100%;
     height: 100%;
     display: flex;
