@@ -42,7 +42,9 @@ export const endpointTypes = Object.freeze({
     13: "Multi State Input",
     14: "Multi State Output",
     19: "Multi-State Value",
-    55: "Binary Lighting output"
+    55: "Binary Lighting output",
+    12: "Loop",
+    39: "Bit_String"
 })
 
 export const bacnetGroupInfo = Object.freeze({
@@ -115,6 +117,20 @@ export const bacnetGroupInfo = Object.freeze({
         childType: "binaryLightingOutput",
         parentRelationName: "hasBinaryLightingOutputs",
         childRelationName: "hasBinaryLightingOutput"
+    },
+    "Loop": {
+        id: 12,
+        nodeType: "loopValues",
+        childType: "loopValue",
+        parentRelationName: "hasLoopValues",
+        childRelationName: "hasLoopValue"
+    },
+    "Bit_String": {
+        id: 39,
+        nodeType: "bitStringValues",
+        childType: "bitStringValue",
+        parentRelationName: "hasBitStringValues",
+        childRelationName: "hasBitStringValue"
     }
 });
 
