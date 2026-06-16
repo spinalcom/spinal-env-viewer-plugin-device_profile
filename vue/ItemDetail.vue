@@ -29,204 +29,139 @@ with this file. If not, see
         <v-card :dark="true">
           <v-card-title class="headline">{{ selected }} Item Details</v-card-title>
 
-          
 
-          
-            <div class="infos">
 
-              <md-field class="infos-details">
-                <label>BIM Naming Convention</label>
-                <md-input v-model="namingConvention"></md-input>
-              </md-field>
-              <v-spacer></v-spacer>
-              <div class="infos-details2">
-                <md-content> Master  </md-content>
-                <md-checkbox class="checkbox" v-model="maitre"></md-checkbox>
-              </div>
+
+          <div class="infos">
+
+            <md-field class="infos-details">
+              <label>BIM Naming Convention</label>
+              <md-input v-model="namingConvention"></md-input>
+            </md-field>
+            <v-spacer></v-spacer>
+            <div class="infos-details2">
+              <md-content> Master </md-content>
+              <md-checkbox class="checkbox" v-model="maitre"></md-checkbox>
             </div>
-            
-            
-            <md-tabs>
-              <md-tab id="tab-input" md-label="Input">
-                <div class="tableaux">
-                  <div class="bloc-table">
-                    <md-toolbar :md-elevation="1">
-                      <span class="md-title">
-                        Linked BacnetValues (Input)
-                      </span>
-                      <v-spacer></v-spacer>
-                        <md-button class="md-icon-button md-raised md-accent" flat @click="onClickInputUnlink">
-                          <md-icon>link_off</md-icon>
-                        </md-button>
+          </div>
 
-                    </md-toolbar>
 
-                    <md-table
-                      v-model="selectedInputs"
-                      md-sort="title"
-                      md-sort-order="asc"
-                      md-card
-                      md-fixed-header
-                      @md-selected="onSelectinPutSelection"
-                    >
-                      <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple"
-                        md-auto-select>
-                        <md-table-cell
-                          md-label="Network Values"
-                          md-sort-by="title"
-                          >{{ item.title }}
-                        </md-table-cell>
-                        <md-table-cell md-label="Name" md-sort-by="name"
-                          >{{ item.name }}
-                        </md-table-cell>
-                        <md-table-cell md-label="IDX" md-sort-by="idx"
-                          >{{ item.idx }}
-                        </md-table-cell>
-                      </md-table-row>
-                    </md-table>
-                  </div>
+          <md-tabs>
+            <md-tab id="tab-input" md-label="Input">
+              <div class="tableaux">
+                <div class="bloc-table">
+                  <md-toolbar :md-elevation="1">
+                    <span class="md-title">
+                      Linked BacnetValues (Input)
+                    </span>
+                    <v-spacer></v-spacer>
+                    <md-button class="md-icon-button md-raised md-accent" flat @click="onClickInputUnlink">
+                      <md-icon>link_off</md-icon>
+                    </md-button>
 
-                  <div class="bloc-table">
-                    <md-toolbar :md-elevation="1">
-                      <span class="md-title">Available BacnetValues</span>
-                      <v-spacer></v-spacer>
-                      <md-field md-clearable @md-clear="onClear" class="md-toolbar-section-end">
-                                              <v-spacer></v-spacer>
+                  </md-toolbar>
 
-                        <md-input
-                          class="search"
-                          placeholder="Search..."
-                          v-model="inputSearch"
-                          @input="inputSearchOnTable"
-                        />
-                      </md-field>
-                    </md-toolbar>
-
-                    <md-table
-                      v-model="inputTab"
-                      md-sort="title"
-                      md-sort-order="asc"
-                      md-card
-                      md-fixed-header
-                      @md-selected="onSelectInput"
-                    >
-                      <md-table-row
-                        slot="md-table-row"
-                        slot-scope="{ item }"
-                        md-selectable="single"
-                        md-auto-select
-                      >
-                        <md-table-cell
-                          md-label="Network Values"
-                          md-sort-by="title"
-                          >{{ item.title }}
-                        </md-table-cell>
-                        <md-table-cell md-label="Name" md-sort-by="name"
-                          >{{ item.name }}
-                        </md-table-cell>
-                        <md-table-cell md-label="IDX" md-sort-by="idx"
-                          >{{ item.idx }}
-                        </md-table-cell>
-                      </md-table-row>
-                    </md-table>
-                  </div>
+                  <md-table v-model="selectedInputs" md-sort="title" md-sort-order="asc" md-card md-fixed-header
+                    @md-selected="onSelectinPutSelection">
+                    <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple" md-auto-select>
+                      <md-table-cell md-label="Network Values" md-sort-by="title">{{ item.title }}
+                      </md-table-cell>
+                      <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}
+                      </md-table-cell>
+                      <md-table-cell md-label="IDX" md-sort-by="idx">{{ item.idx }}
+                      </md-table-cell>
+                    </md-table-row>
+                  </md-table>
                 </div>
-              </md-tab>
 
-              <md-tab id="tab-output" md-label="Output">
-                <div class="tableaux">
-                  <div class="bloc-table">
-                    <md-toolbar>
-                      <span class="md-title">
-                        Linked BacnetValues (Output)
-                      </span>
+                <div class="bloc-table">
+                  <md-toolbar :md-elevation="1">
+                    <span class="md-title">Available BacnetValues</span>
+                    <v-spacer></v-spacer>
+                    <md-field md-clearable @md-clear="onClear" class="md-toolbar-section-end">
                       <v-spacer></v-spacer>
-                      <md-button class="md-icon-button md-raised md-accent" flat @click="onClickOutputUnlink">
-                        <md-icon>link_off</md-icon>
-                      </md-button>
-                    </md-toolbar>
 
-                    <md-table
-                      v-model="selectedOutputs"
-                      md-sort="title"
-                      md-sort-order="asc"
-                      md-card
-                      md-fixed-header
-                      @md-selected="onSelectOutputSelection"
-                    >
-                      <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple" md-auto-select>
-                        <md-table-cell
-                          md-label="Network Values"
-                          md-sort-by="title"
-                          >{{ item.title }}
-                        </md-table-cell>
-                        <md-table-cell md-label="Name" md-sort-by="name"
-                          >{{ item.name }}
-                        </md-table-cell>
-                        <md-table-cell md-label="IDX" md-sort-by="idx"
-                          >{{ item.idx }}
-                        </md-table-cell>
-                      </md-table-row>
-                    </md-table>
-                  </div>
+                      <md-input class="search" placeholder="Search..." v-model="inputSearch"
+                        @input="inputSearchOnTable" />
+                    </md-field>
+                  </md-toolbar>
 
-                  <div class="bloc-table">
-                    <md-toolbar>
-                      <span class="md-title">Available BacnetValues</span>
-                                              <v-spacer></v-spacer>
-
-                      <md-field md-clearable class="md-toolbar-section-end">
-                        <md-input
-                          class="search"
-                          placeholder="Search..."
-                          v-model="outputSearch"
-                          @input="outputSearchOnTable"
-                        />
-                      </md-field>
-                    </md-toolbar>
-
-                    <md-table
-                      v-model="outputTab"
-                      md-sort="title"
-                      md-sort-order="asc"
-                      md-card
-                      md-fixed-header
-                      @md-selected="onSelectOutput"
-                    >
-                      <md-table-row
-                        slot="md-table-row"
-                        slot-scope="{ item }"
-                        md-selectable="single"
-                        md-auto-select
-                      >
-                        <md-table-cell
-                          md-label="Network Values"
-                          md-sort-by="title"
-                          >{{ item.title }}
-                        </md-table-cell>
-                        <md-table-cell md-label="Name" md-sort-by="name"
-                          >{{ item.name }}
-                        </md-table-cell>
-                        <md-table-cell md-label="IDX" md-sort-by="idx"
-                          >{{ item.idx }}
-                        </md-table-cell>
-                      </md-table-row>
-                    </md-table>
-                  </div>
+                  <md-table v-model="inputTab" md-sort="title" md-sort-order="asc" md-card md-fixed-header
+                    @md-selected="onSelectInput">
+                    <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="single" md-auto-select>
+                      <md-table-cell md-label="Network Values" md-sort-by="title">{{ item.title }}
+                      </md-table-cell>
+                      <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}
+                      </md-table-cell>
+                      <md-table-cell md-label="IDX" md-sort-by="idx">{{ item.idx }}
+                      </md-table-cell>
+                    </md-table-row>
+                  </md-table>
                 </div>
-              </md-tab>
-            </md-tabs>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="red darken-1" flat @click="onCancel"
-                >Annuler
-              </v-btn>
+              </div>
+            </md-tab>
 
-              <v-btn color="green darken-1" flat @click="onSave"
-                >Valider
-              </v-btn>
-            </v-card-actions>
-          
+            <md-tab id="tab-output" md-label="Output">
+              <div class="tableaux">
+                <div class="bloc-table">
+                  <md-toolbar>
+                    <span class="md-title">
+                      Linked BacnetValues (Output)
+                    </span>
+                    <v-spacer></v-spacer>
+                    <md-button class="md-icon-button md-raised md-accent" flat @click="onClickOutputUnlink">
+                      <md-icon>link_off</md-icon>
+                    </md-button>
+                  </md-toolbar>
+
+                  <md-table v-model="selectedOutputs" md-sort="title" md-sort-order="asc" md-card md-fixed-header
+                    @md-selected="onSelectOutputSelection">
+                    <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple" md-auto-select>
+                      <md-table-cell md-label="Network Values" md-sort-by="title">{{ item.title }}
+                      </md-table-cell>
+                      <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}
+                      </md-table-cell>
+                      <md-table-cell md-label="IDX" md-sort-by="idx">{{ item.idx }}
+                      </md-table-cell>
+                    </md-table-row>
+                  </md-table>
+                </div>
+
+                <div class="bloc-table">
+                  <md-toolbar>
+                    <span class="md-title">Available BacnetValues</span>
+                    <v-spacer></v-spacer>
+
+                    <md-field md-clearable class="md-toolbar-section-end">
+                      <md-input class="search" placeholder="Search..." v-model="outputSearch"
+                        @input="outputSearchOnTable" />
+                    </md-field>
+                  </md-toolbar>
+
+                  <md-table v-model="outputTab" md-sort="title" md-sort-order="asc" md-card md-fixed-header
+                    @md-selected="onSelectOutput">
+                    <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="single" md-auto-select>
+                      <md-table-cell md-label="Network Values" md-sort-by="title">{{ item.title }}
+                      </md-table-cell>
+                      <md-table-cell md-label="Name" md-sort-by="name">{{ item.name }}
+                      </md-table-cell>
+                      <md-table-cell md-label="IDX" md-sort-by="idx">{{ item.idx }}
+                      </md-table-cell>
+                    </md-table-row>
+                  </md-table>
+                </div>
+              </div>
+            </md-tab>
+          </md-tabs>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="red darken-1" flat @click="onCancel">Annuler
+            </v-btn>
+
+            <v-btn color="green darken-1" flat @click="onSave">Valider
+            </v-btn>
+          </v-card-actions>
+
         </v-card>
       </v-dialog>
     </v-layout>
@@ -280,17 +215,15 @@ export default {
       this.selected = (await SpinalGraphService.getNodeAsync(this.parentId)).name._data;
 
       // this.parentNode = await SpinalGraphService.getRealNode(option.selectedNode.id);
-      if((await SpinalGraphService.getChildren(this.parentId, "hasInputs")) != undefined ){
+      if ((await SpinalGraphService.getChildren(this.parentId, "hasInputs")) != undefined) {
         this.inputsId = (await SpinalGraphService.getChildren(this.parentId, "hasInputs"))[0].id._data;
       }
 
-      if((await SpinalGraphService.getChildren(this.parentId, "hasOutputs")) != undefined){
+      if ((await SpinalGraphService.getChildren(this.parentId, "hasOutputs")) != undefined) {
         this.outputsId = (await SpinalGraphService.getChildren(this.parentId, "hasOutputs"))[0].id._data;
       }
-      
-      this.ioTab = await DeviceHelper.itemDetailInputOutput(
-        option.selectedNode
-      );
+
+      this.ioTab = await DeviceHelper.itemDetailInputOutput(option.selectedNode);
       await this.arrangeTabs();
 
       this.namingConvention = (await DeviceHelper.itemDetailInfos(option.selectedNode)).namingConvention;
@@ -304,32 +237,50 @@ export default {
       // console.log("end logs");
     },
     arrangeTabs: async function () {
-      // inputs
-      for (var elt in this.ioTab.NetworkValue) {
-        this.chooseBetweenTables(this.ioTab.NetworkValue[elt], this.inputsId, this.inputTab, this.selectedInputs, this.backupInput);
+
+
+      for (var key in this.ioTab) {
+        if (key === "others") continue;
+        const values = this.ioTab[key];
+
+        for (var elt in values) {
+          const list = key.toLowerCase().includes("input") ? this.inputTab : this.outputTab;
+          const id = key.toLowerCase().includes("input") ? this.inputsId : this.outputsId;
+          const backup = key.toLowerCase().includes("input") ? this.backupInput : this.backupOutput;
+          const selected = key.toLowerCase().includes("input") ? this.selectedInputs : this.selectedOutputs;
+
+          this.chooseBetweenTables(values[elt], id, list, selected, backup);
+        }
       }
-      for (var elt in this.ioTab.AnalogInput) {
-        this.chooseBetweenTables(this.ioTab.AnalogInput[elt], this.inputsId, this.inputTab, this.selectedInputs, this.backupInput);
-      }
-      for (var elt in this.ioTab.BinaryInput) {
-        this.chooseBetweenTables(this.ioTab.BinaryInput[elt], this.inputsId, this.inputTab, this.selectedInputs, this.backupInput);
-      }
-      for (var elt in this.ioTab.MultiStateInput) {
-        this.chooseBetweenTables(this.ioTab.MultiStateInput[elt], this.inputsId, this.inputTab, this.selectedInputs, this.backupInput);
-      }
-      // outputs
-      for (var elt in this.ioTab.BinaryValue) {
-        this.chooseBetweenTables(this.ioTab.BinaryValue[elt], this.outputsId, this.outputTab, this.selectedOutputs, this.backupOutput);
-      }
-      for (var elt in this.ioTab.AnalogValue) {
-        this.chooseBetweenTables(this.ioTab.AnalogValue[elt], this.outputsId, this.outputTab, this.selectedOutputs, this.backupOutput);
-      }
-      for (var elt in this.ioTab.MultiStateValue) {
-        this.chooseBetweenTables(this.ioTab.MultiStateValue[elt], this.outputsId, this.outputTab, this.selectedOutputs, this.backupOutput);
-      }
-      for (var elt in this.ioTab.AnalogOutput) {
-        this.chooseBetweenTables(this.ioTab.AnalogOutput[elt], this.outputsId, this.outputTab, this.selectedOutputs, this.backupOutput);
-      }
+
+      // // inputs
+      // for (var elt in this.ioTab.NetworkValue) {
+      //   this.chooseBetweenTables(this.ioTab.NetworkValue[elt], this.inputsId, this.inputTab, this.selectedInputs, this.backupInput);
+      // }
+      // for (var elt in this.ioTab.AnalogInput) {
+      //   this.chooseBetweenTables(this.ioTab.AnalogInput[elt], this.inputsId, this.inputTab, this.selectedInputs, this.backupInput);
+      // }
+      // for (var elt in this.ioTab.BinaryInput) {
+      //   this.chooseBetweenTables(this.ioTab.BinaryInput[elt], this.inputsId, this.inputTab, this.selectedInputs, this.backupInput);
+      // }
+      // for (var elt in this.ioTab.MultiStateInput) {
+      //   this.chooseBetweenTables(this.ioTab.MultiStateInput[elt], this.inputsId, this.inputTab, this.selectedInputs, this.backupInput);
+      // }
+      // // outputs
+      // for (var elt in this.ioTab.BinaryValue) {
+      //   this.chooseBetweenTables(this.ioTab.BinaryValue[elt], this.outputsId, this.outputTab, this.selectedOutputs, this.backupOutput);
+      // }
+      // for (var elt in this.ioTab.AnalogValue) {
+      //   this.chooseBetweenTables(this.ioTab.AnalogValue[elt], this.outputsId, this.outputTab, this.selectedOutputs, this.backupOutput);
+      // }
+      // for (var elt in this.ioTab.MultiStateValue) {
+      //   this.chooseBetweenTables(this.ioTab.MultiStateValue[elt], this.outputsId, this.outputTab, this.selectedOutputs, this.backupOutput);
+      // }
+      // for (var elt in this.ioTab.AnalogOutput) {
+      //   this.chooseBetweenTables(this.ioTab.AnalogOutput[elt], this.outputsId, this.outputTab, this.selectedOutputs, this.backupOutput);
+      // }
+
+
 
       this.saveInputTab = this.inputTab;
       this.saveOutputTab = this.outputTab;
@@ -337,23 +288,23 @@ export default {
       // this.backupInput = this.inputTab;
       // this.backupOutput = this.outputTab;
     },
-    chooseBetweenTables: function(elementToAdd, nodeId, entryTab, selectedTab, backup = 0){
+    chooseBetweenTables: function (elementToAdd, nodeId, entryTab, selectedTab, backup = 0) {
 
       var selectedIds = [];
       selectedIds = SpinalGraphService.getChildrenIds(nodeId);
-      
+
       backup.push(elementToAdd);
 
-      if ((selectedIds.filter(elt => (elt == elementToAdd.nodeId))).length == 0 ){
+      if ((selectedIds.filter(elt => (elt == elementToAdd.nodeId))).length == 0) {
         entryTab.push(elementToAdd);
       }
-      else{
+      else {
         selectedTab.push(elementToAdd);
       }
 
     }
     ,
-    initializeData: function(){
+    initializeData: function () {
       this.users = [];
       this.namingConvention = null;
       this.maitre = false;
@@ -381,7 +332,7 @@ export default {
       this.initialize(option);
       this.dialog = true;
     },
-    removed: function () {},
+    removed: function () { },
     closeDialog() {
       this.dialog = false;
     },
@@ -397,66 +348,66 @@ export default {
       );
       this.dialog = false;
     },
-    onSelectInput: async function(items) {
+    onSelectInput: async function (items) {
       //this.inputSearch = [];
-      
-         this.passElementBetweenTables(items, this.inputTab, this.selectedInputs, this.saveInputTab, 0);
-         this.inputSearchOnTable();
+
+      this.passElementBetweenTables(items, this.inputTab, this.selectedInputs, this.saveInputTab, 0);
+      this.inputSearchOnTable();
     },
-    onSelectOutput: async function(items) {
-       this.passElementBetweenTables(items, this.outputTab, this.selectedOutputs,this.saveOutputTab, 0);
+    onSelectOutput: async function (items) {
+      this.passElementBetweenTables(items, this.outputTab, this.selectedOutputs, this.saveOutputTab, 0);
     },
-    onSelectinPutSelection(items){
+    onSelectinPutSelection(items) {
       this.selectedSelectedInputs = items;
     },
-    onSelectOutputSelection(items){
+    onSelectOutputSelection(items) {
       this.selectedSelectedOutputs = items;
     },
-    onClickInputUnlink: async function(){
+    onClickInputUnlink: async function () {
       //const temp = this.selectedSelectedInputs;
       //await this.constructSaveTab(this.saveInputTab);
       const temp = this.selectedSelectedInputs;
-      for(var elt in temp){
-         this.passElementBetweenTables(temp[elt], this.selectedInputs, this.inputTab, this.saveInputTab, 1);
+      for (var elt in temp) {
+        this.passElementBetweenTables(temp[elt], this.selectedInputs, this.inputTab, this.saveInputTab, 1);
       }
     },
-    onClickOutputUnlink: async function(){
+    onClickOutputUnlink: async function () {
       const temp = this.selectedSelectedOutputs;
-      for (var elt in temp){
-         this.passElementBetweenTables(temp[elt], this.selectedOutputs, this.outputTab, this.saveOutputTab, 1);
+      for (var elt in temp) {
+        this.passElementBetweenTables(temp[elt], this.selectedOutputs, this.outputTab, this.saveOutputTab, 1);
       }
     },
-    passElementBetweenTables: function(element, tabIn, tabOut, savedTab, sens){
+    passElementBetweenTables: function (element, tabIn, tabOut, savedTab, sens) {
       // sens = 0 : Available -> Linked (savedTab reduces)
       // sens = 1 : Linked -> Available (savedTab grows)
       // tabIn = await Array.from(new Set(tabIn));
-      var index =  tabIn.findIndex((elt)=> (elt == element || elt.nodeId == element.nodeId));
-      if(index > -1){
-        var iIndex =  tabOut.findIndex((elt)=> (elt == element || elt.nodeId == element.nodeId));
-        if(iIndex > -1){
-           tabIn.splice(index,1);
+      var index = tabIn.findIndex((elt) => (elt == element || elt.nodeId == element.nodeId));
+      if (index > -1) {
+        var iIndex = tabOut.findIndex((elt) => (elt == element || elt.nodeId == element.nodeId));
+        if (iIndex > -1) {
+          tabIn.splice(index, 1);
         }
-        else{
-           tabOut.push(tabIn[index]);
-           tabIn.splice(index, 1);
+        else {
+          tabOut.push(tabIn[index]);
+          tabIn.splice(index, 1);
         }
       }
-      else{
+      else {
       }
       index = -1;
       // await this.constructSaveTab(this.backupInput, this.saveInputTab, this.selectedInputs);
     },
-    constructSaveTab:  function(backup, savedTab, tabSelected){
+    constructSaveTab: function (backup, savedTab, tabSelected) {
 
-      savedTab = backup; 
-      for (var elt in tabSelected){
-        var index =  savedTab.findIndex((obj) => (obj == tabSelected[elt]));
-        if(index > -1){
-           savedTab.splice(index, 1);
+      savedTab = backup;
+      for (var elt in tabSelected) {
+        var index = savedTab.findIndex((obj) => (obj == tabSelected[elt]));
+        if (index > -1) {
+          savedTab.splice(index, 1);
         }
       }
     },
-    inputSearchOnTable:  function() {
+    inputSearchOnTable: function () {
       var lowerSearch = this.inputSearch.toString().toLowerCase();
       var tempTab = [];
 
@@ -478,18 +429,18 @@ export default {
           tempTab.push(this.backupInput[elt]);
         }
       }
-      for (let elt2 in this.selectedInputs){
+      for (let elt2 in this.selectedInputs) {
         var index = tempTab.findIndex((obj) => (obj == this.selectedInputs[elt2]));
-        if(index > -1){
-           tempTab.splice(index, 1);
+        if (index > -1) {
+          tempTab.splice(index, 1);
         }
       }
       this.inputTab = tempTab;
     },
-    onClear: async function(){
+    onClear: async function () {
       // this.inputTab = this.saveInputTab;
     },
-    outputSearchOnTable: async function() {
+    outputSearchOnTable: async function () {
       var lowerSearch = this.outputSearch.toString().toLowerCase();
       var tempTab = [];
 
@@ -511,9 +462,9 @@ export default {
           tempTab.push(this.backupOutput[elt]);
         }
       }
-      for (let elt2 in this.selectedOutputs){
+      for (let elt2 in this.selectedOutputs) {
         var index = tempTab.findIndex((obj) => (obj == this.selectedOutputs[elt2]));
-        if(index > -1){
+        if (index > -1) {
           await tempTab.splice(index, 1);
         }
       }
@@ -529,30 +480,35 @@ export default {
   flex-direction: row;
   place-content: baseline space-evenly;
 }
+
 .bloc-table {
   display: flex;
   flex-direction: column;
   place-content: center start;
 }
+
 .search {
   max-width: 100px;
 }
-.infos{
+
+.infos {
   display: flex;
   justify-content: space-around;
   padding-left: 30%;
   padding-right: 35%;
 }
-.infos-details{
+
+.infos-details {
   max-width: 35%;
 }
-.infos-details2{
+
+.infos-details2 {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.checkbox{
+
+.checkbox {
   padding-left: 8px;
 }
 </style>
-
