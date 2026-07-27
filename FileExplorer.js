@@ -34,8 +34,8 @@ import { DeviceHelper } from "./build/DeviceHelper";
 import { SpinalNode } from 'spinal-model-graph';
 import { fstat } from "fs";
 
-const xml2js = require('xml2js');
-const axios = require('axios');
+import xml2js from 'xml2js';
+import axios from 'axios';
 
 
 
